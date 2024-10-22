@@ -13,3 +13,6 @@ We plan to utilize HTML and CSS, including both raw CSS and possibly frameworks 
 ## 3. Strategies and Technologies for Data Handling and Processing
 
 For data handling and processing, we will employ Python as our primary programming language. We intend to use Pandas for data manipulation and cleaning, as well as NumPy for numerical operations. For intermediate data visualization prior to integrating graphics into the web page, we will utilize either Matplotlib, Seaborn, or Plotly.
+
+
+Link to the site: https://andrestc21.github.io/Data_Visualization_Chart_Troopers/
