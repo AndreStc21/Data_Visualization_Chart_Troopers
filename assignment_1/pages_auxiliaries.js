@@ -24,12 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const title = document.getElementById("navbar");
     title.onclick = function() {
-		if (window.location.pathname.endsWith("index.html")) {
-			window.location.href = "";
-		}
-		else {
-			window.location.href = "../index.html";
-		}
+		window.location.href = "https://andrestc21.github.io/Data_Visualization_Chart_Troopers/";
     };
 });
 
