@@ -1,5 +1,6 @@
 body {
     margin: 0;
+	font-family: 'Fira Sans';
 }
 
 #page-container {
@@ -11,12 +12,14 @@ body {
 	padding-bottom: 3rem;
 }
 
-#graph_1 {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
+.center{
+	text-align: center;
 }
+
+h1, h2, h3, h4, h5, h6{
+	font-family: 'Roboto Slab';
+}
+
   
 #footer {
 	position: absolute;
