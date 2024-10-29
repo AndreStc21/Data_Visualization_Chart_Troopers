@@ -12,14 +12,28 @@ body {
 	padding-bottom: 3rem;
 }
 
-.center{
+.center {
 	text-align: center;
 }
 
-h1, h2, h3, h4, h5, h6{
+h1, h2, h3, h4, h5, h6 {
 	font-family: 'Roboto Slab';
 }
 
+nav {
+	font-size: 22px;
+	margin: 0;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	background-color: #2e68c0;
+	color: whitesmoke;
+	height: 5.5rem;
+}
+
+#title {
+	margin: 0;
+}
   
 #footer {
 	position: absolute;
@@ -34,7 +48,7 @@ h1, h2, h3, h4, h5, h6{
 
 #span-footer
 {
-	color: white;
+	color: whitesmoke;
     position: absolute;
     top: 50%;
     left: 50%;
