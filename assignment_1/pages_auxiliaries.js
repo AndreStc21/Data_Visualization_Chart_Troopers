@@ -18,14 +18,13 @@ document.write(`
 document.addEventListener("DOMContentLoaded", function() {
     const navbar = document.createElement("nav");
     navbar.id = "navbar";
-    navbar.innerHTML = `<h1 id="title" style="cursor: pointer;">Data Visualization Website</h1>`;
-						
-	document.body.insertBefore(navbar, document.body.firstChild);
-
-    const title = document.getElementById("navbar");
-    title.onclick = function() {
-		window.location.href = "https://andrestc21.github.io/Data_Visualization_Chart_Troopers/";
-    };
+    navbar.innerHTML = `<h1 id="title" style="cursor: pointer;">
+                           <a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none; color: inherit;">
+                               Data Visualization Website
+                           </a>
+                       </h1>`;
+    
+    document.body.insertBefore(navbar, document.body.firstChild);
 });
 
 // FOOTER
