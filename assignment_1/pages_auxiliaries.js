@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const navbar = document.createElement("nav");
     navbar.id = "navbar";
     navbar.innerHTML = `<h1 id="title" style="cursor: pointer;">
-                           <a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none">
+                           <a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none; color: inherit;">
                                Data Visualization Website
                            </a>
                        </h1>`;
