@@ -99,22 +99,24 @@ function stacked_bar_plot(data, svg_plot, id_div){
 		d3.group(data, d => d.region),  // Group data by 'region'
 		([region, values]) => {
 		  const regionData = { region: region };
-		  values.forEach(v => regionData[v.entity] = v.emissions);
+		  values.forEach(v => regionData[v.rank] = v.emissions);
 		  return regionData;
 		}
 	  );
 	  
 
-	const subgroups = Array.from(new Set(data.map(d => d.entity)));
+	const subgroups = Array.from(new Set(data.map(d => d.rank)));
 	const groups = Array.from(new Set(data.map(d => d.region)));
 
 	// Get the max value for the Y axis
 	var max_value = 0;
-	data.forEach(d => {
-		if(d.emissions>max_value){
-			max_value = d.emissions;
+	for(let i=0; i<6; i++){
+		let value_region = 0;
+		subgroups.forEach(j => value_region += nestedData[i][j])
+		if(value_region>max_value){
+			max_value = value_region;
 		}
-	});
+	}
 
 	// Add X axis
 	const x = d3.scaleBand()
@@ -140,7 +142,7 @@ function stacked_bar_plot(data, svg_plot, id_div){
 	// color palette = one color per every subgroup
 	const color = d3.scaleOrdinal()
 	.domain(subgroups)
-	.range(d3.interpolateBrBG);
+	.range(['#5778a4', '#e49444', '#d1615d','#85b6b2','#6a9f58', '#e7ca60']);
 
 	// stacko male i dati, guardate come funziona .stack() per capire meglio. La parte critica comunque è quella qua sotto
 
@@ -154,23 +156,22 @@ function stacked_bar_plot(data, svg_plot, id_div){
     .value(([, group], key) => group.get(key).emissions)
     (d3.index(data, d => d.region, d => d.entity)); */
 
-	  // Show the bars
-	  svg_plot.append("g")
-	  .selectAll("g")
-	  // Enter in the stack data = loop key per key = group per group
-	  .data(stackedData)
-	  .join("g")
-		.attr("fill", d => color(d.key))
-		.attr("class", d => "myRect " + d.key ) // Add a class to each subgroup: their name
-		.selectAll("rect")
-		// enter a second time = loop subgroup per subgroup to add all rectangles
-		.data(d => d)
-		.join("rect")
-		  .attr("x", d => x(d.region))
-		  .attr("y", d => y(d.emissions))
-		  .attr("height", d => height - y(d.emissions))
-		  .attr("width",x.bandwidth())
-		  .attr("stroke", "grey")
+	// Show the bars
+	svg_plot.append("g")
+	.selectAll("g")
+	// Enter in the stack data = loop key per key = group per group
+	.data(stackedData)
+	.join("g")
+	.attr("fill", d => color(d.key))
+	.selectAll("rect")
+	// enter a second time = loop subgroup per subgroup to add all rectangles
+	.data(d => d)
+	.join("rect")
+	.attr("x", d =>  x(d.data.region))
+	.attr("y", d => y(d[1]))
+	.attr("height", d => y(d[0]) - y(d[1]))
+	.attr("width",x.bandwidth())
+	.attr("stroke", "grey")
 }
 
 d3.csv("co-emissions-per-capita-last-year.csv", function(d) {
@@ -195,13 +196,14 @@ d3.csv("co-emissions-per-capita-last-decade.csv", function(d) {
 	bar_plot(data, svg_plot2, "#plot2");
 });
 
-/* d3.csv("co-emissions-per-capita-last-year-region-comparison.csv", function(d) {
+d3.csv("co-emissions-per-capita-last-year-region-comparison.csv", function(d) {
 	return {
 		region: d.Region,
 		entity: d.Entity,
-		emissions: +d['Annual CO2 emissions (per capita)']
+		emissions: +d['Annual CO2 emissions (per capita)'],
+		rank: d.Rank
 	  };
 })
 .then(function (data) {
 	stacked_bar_plot(data, svg_plot3, "#plot3");
-}); */
+});
