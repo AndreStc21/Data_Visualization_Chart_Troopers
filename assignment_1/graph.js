@@ -1,4 +1,4 @@
-const margin = {top: 30, right: 30, bottom: 100, left: 60},
+const margin = {top: 30, right: 30, bottom: 100, left: 100},
 width = 500 - margin.left - margin.right,
 height = 500 - margin.top - margin.bottom;
 
@@ -23,6 +23,12 @@ const svg_plot3 = d3.select("#plot3")
 .append("g")
 .attr("transform", `translate(${margin.left},${margin.top})`);
 
+const svg_plot6 = d3.select("#plot6")
+.append("svg")
+.attr("width", width + margin.left + margin.right)
+.attr("height", height + margin.top + margin.bottom)
+.append("g")
+.attr("transform", `translate(${margin.left},${margin.top})`);
 
 function bar_plot(data, svg_plot, id_div){
 	var max_value = 0;
@@ -174,6 +180,85 @@ function stacked_bar_plot(data, svg_plot, id_div){
 	.attr("stroke", "grey")
 }
 
+function heatmap_plot(data, svg_plot, id_div){
+	var max_value = 0;
+	var min_value = Infinity;
+	data.forEach(d => {
+		if(d.value>max_value){
+			max_value = d.value;
+		}
+		if(d.value<min_value){
+			min_value = d.value;
+		}
+	});
+
+	const myColor = d3.scaleLinear()
+  	.range(["white", "#69b3a2"])
+  	.domain([min_value, max_value])
+
+	const x = d3.scaleBand()
+	.range([ 0, width ])
+	.domain(data.map(d => d.group))
+	.padding(0.2);
+
+	svg_plot.append("g")
+	.attr("transform", `translate(0, ${height})`)
+	.call(d3.axisBottom(x))
+	.selectAll("text")
+	.attr("transform", "translate(-10,0)rotate(-45)")
+	.style("text-anchor", "end");
+
+	const y = d3.scaleBand()
+	.domain(data.map(d => d.entity))
+	.range([ height, 0])
+	.padding(0.1);
+
+	svg_plot.append("g")
+	.call(d3.axisLeft(y));
+
+	var tooltip = d3.select("body")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
+	.style("position", "absolute")
+	.style("left", "0px")
+	.style("top", "0px");
+
+	var mouseover = function(event, d) {
+		d3.selectAll(id_div+"  rect").style("opacity", 0.2);
+		d3.select(this).style("opacity", 1);
+		info = d3.select(this).datum()
+		tooltip.html("Country: " + info.entity + "<br>" + "Value: " + info.value).style("opacity", 1);
+	}
+
+	var mousemove = function(event, d) {
+		tooltip.style('left', (event.pageX+20) + 'px').style('top', (event.pageY) + 'px');
+	}
+
+	var mouseleave = function(event, d) {
+		d3.selectAll(id_div+" rect").style("opacity",0.8);
+		tooltip.style("opacity", 0);
+	}
+
+	svg_plot.selectAll()
+	.data(data, function(d) {return d.group+':'+d.entity;})
+    .enter()
+    .append("rect")
+	.attr("x", function(d) { return x(d.group) })
+	.attr("y", function(d) { return y(d.entity) })
+	.attr("width", x.bandwidth() )
+	.attr("height", y.bandwidth() )
+	.style("fill", function(d) { return myColor(d.value)} )
+	.on("mouseover", mouseover)
+	.on("mousemove", mousemove)
+    .on("mouseleave", mouseleave);
+}
+
 d3.csv("co-emissions-per-capita-last-year.csv", function(d) {
 	return {
 		entity: d.Entity,
@@ -206,4 +291,17 @@ d3.csv("co-emissions-per-capita-last-year-region-comparison.csv", function(d) {
 })
 .then(function (data) {
 	stacked_bar_plot(data, svg_plot3, "#plot3");
+});
+
+
+d3.csv("co2-emission-type-last-year.csv", function(d) {
+	return {
+		entity: d.Entity,
+		code: d.Code,
+		group: d.Group,
+		value: +d['Value']
+	  };
+})
+.then(function (data) {
+	heatmap_plot(data, svg_plot6, "#plot6");
 });
