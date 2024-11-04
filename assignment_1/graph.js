@@ -142,10 +142,17 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	}
 
 	// Add X axis
-	const x = d3.scaleBand()
-	.range([ 0, width ])
-	.domain(groups)
-	.padding(0.2);
+	var x;
+	if(normalized){
+		x = d3.scaleLinear()
+		.domain([0, max_value])
+		.range([0, height]);
+	}
+	else{
+		x = d3.scaleLinear()
+		.domain([0, max_value+(0.1*max_value)])
+		.range([0, height]);
+	}
 	
 	svg_plot.append("g")
 	.attr("transform", `translate(0, ${height})`)
@@ -155,17 +162,10 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	.style("text-anchor", "end");
 
 	// Add Y axis
-	var y;
-	if(normalized){
-		y = d3.scaleLinear()
-		.domain([0, max_value])
-		.range([ height, 0]);
-	}
-	else{
-		y = d3.scaleLinear()
-		.domain([0, max_value+(0.1*max_value)])
-		.range([ height, 0]);
-	}
+	const y = d3.scaleBand()
+	.range([ 0, width ])
+	.domain(groups)
+	.padding(0.2);
 
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
@@ -218,10 +218,10 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	// enter a second time = loop subgroup per subgroup to add all rectangles
 	.data(d => d)
 	.join("rect")
-	.attr("x", d =>  x(d.data.region))
-	.attr("y", d => y(d[1]))
-	.attr("height", d => y(d[0]) - y(d[1]))
-	.attr("width",x.bandwidth())
+	.attr("y", d =>  y(d.data.region))
+	.attr("x", d => x(d[0]))
+	.attr("width", d => x(d[1]) - x(d[0]))
+	.attr("height", y.bandwidth())
 	.attr("stroke", "grey")
 	.on("mouseover", mouseover)
 	.on("mousemove", mousemove)
