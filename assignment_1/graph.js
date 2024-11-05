@@ -278,20 +278,36 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 // }
 
 function heatmap_plot(data, svg_plot, id_div){
-	var max_value = 0;
-	var min_value = Infinity;
+	var max_value_fossil = 0;
+	var min_value_fossil = Infinity;
+	var max_value_land = 0;
+	var min_value_land = Infinity;
 	data.forEach(d => {
-		if(d.value>max_value){
-			max_value = d.value;
+		if(d.group=="fossil"){
+			if(d.value>max_value_fossil){
+				max_value_fossil = d.value;
+			}
+			if(d.value<min_value_fossil){
+				min_value_fossil = d.value;
+			}
 		}
-		if(d.value<min_value){
-			min_value = d.value;
+		else{
+			if(d.value>max_value_land){
+				max_value_land = d.value;
+			}
+			if(d.value<min_value_land){
+				min_value_land = d.value;
+			}
 		}
 	});
 
-	const myColor = d3.scaleLinear()
+	const myColor_fossil = d3.scaleLinear()
   	.range(["green", "red"])
-  	.domain([min_value, max_value])
+  	.domain([min_value_fossil, max_value_fossil])
+
+	  const myColor_land = d3.scaleLinear()
+  	.range(["green", "red"])
+  	.domain([min_value_land, max_value_land])
 
 	const y = d3.scaleBand()
 	.range([ 0, width ])
@@ -348,7 +364,7 @@ function heatmap_plot(data, svg_plot, id_div){
 	.attr("x", function(d) { return x(d.entity) })
 	.attr("width", x.bandwidth() )
 	.attr("height", y.bandwidth() )
-	.style("fill", function(d) { return myColor(d.value)} )
+	.style("fill", function(d) { if(d.group=="fossil") {return myColor_fossil(d.value)} else {return myColor_land(d.value)}} )
 	.on("mouseover", mouseover)
 	.on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
