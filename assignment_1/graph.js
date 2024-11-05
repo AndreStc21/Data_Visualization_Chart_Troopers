@@ -1,6 +1,6 @@
 const margin = {top: 30, right: 30, bottom: 100, left: 100},
-width = 500 - margin.left - margin.right,
-height = 500 - margin.top - margin.bottom;
+width = 550 - margin.left - margin.right,
+height = 550 - margin.top - margin.bottom;
 
 const svg_plot1 = d3.select("#plot1")
 .append("svg")
@@ -17,6 +17,13 @@ const svg_plot2 = d3.select("#plot2")
 .attr("transform", `translate(${margin.left},${margin.top})`);
 
 const svg_plot3 = d3.select("#plot3")
+.append("svg")
+.attr("width", width + margin.left + margin.right)
+.attr("height", height + margin.top + margin.bottom)
+.append("g")
+.attr("transform", `translate(${margin.left},${margin.top})`);
+
+const svg_plot4 = d3.select("#plot4")
 .append("svg")
 .attr("width", width + margin.left + margin.right)
 .attr("height", height + margin.top + margin.bottom)
@@ -146,12 +153,12 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	if(normalized){
 		x = d3.scaleLinear()
 		.domain([0, max_value])
-		.range([0, height]);
+		.range([0, width]);
 	}
 	else{
 		x = d3.scaleLinear()
 		.domain([0, max_value+(0.1*max_value)])
-		.range([0, height]);
+		.range([0, width]);
 	}
 	
 	svg_plot.append("g")
@@ -163,7 +170,7 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 
 	// Add Y axis
 	const y = d3.scaleBand()
-	.range([ 0, width ])
+	.range([0, height])
 	.domain(groups)
 	.padding(0.2);
 
@@ -188,7 +195,7 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 		d3.select(this).style("opacity", 1);
 		info = d3.select(this).datum();
 		info_parent = d3.select(this.parentNode).datum();
-		tooltip.html("Country: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key]).style("opacity", 1);
+		tooltip.html("Rank: " + info_parent.key + "<br>" + "Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key]).style("opacity", 1);
 	}
 
 	var mousemove = function(event, d) {
@@ -228,6 +235,48 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
     .on("mouseleave", mouseleave);
 }
 
+// function small_multiples_bar_plot(data, svg_plot, id_div){
+// 	const sumstat = d3.group(data, d => d.rank);
+// 	const allKeys = new Set(data.map(d=>d.rank));
+// 	const groups = Array.from(new Set(data.map(d => d.region)));
+// 	const subgroups = Array.from(new Set(data.map(d => d.region)));
+// 	const n_plots = allKeys.size;
+
+// 	var max_value = 0;
+// 	data.forEach(d => function(d){
+// 		if(d.emissions>max_value){
+// 			max_value = d.emissions;
+// 		}
+// 	})
+
+// 	const x = d3.scaleLinear()
+// 		.domain([0, max_value+(0.1*max_value)])
+// 		.range([0, width/n_plots]);
+	
+// 	svg
+//     .append("g")
+//     .attr("transform", `translate(0, ${height})`)
+//     .call(d3.axisBottom(x));
+
+// 	const y = d3.scaleLinear()
+//     .domain([groups])
+//     .range([0, height]);
+
+//   	svg.append("g")
+//     .call(d3.axisLeft(y));
+
+// 	const color = d3.scaleOrdinal()
+// 	.domain(subgroups)
+// 	.range(['#5778a4', '#e49444', '#d1615d','#85b6b2','#6a9f58', '#e7ca60']);
+
+// 	svg
+// 	.append("rect")
+// 	.attr("y", d => function(d) {return y(d.region)})
+// 	.attr("x", d => 0)
+// 	.attr("width", d => function(d) {return x(d.emissions)})
+// 	.attr("height", y.bandwidth());
+// }
+
 function heatmap_plot(data, svg_plot, id_div){
 	var max_value = 0;
 	var min_value = Infinity;
@@ -241,13 +290,16 @@ function heatmap_plot(data, svg_plot, id_div){
 	});
 
 	const myColor = d3.scaleLinear()
-  	.range(["white", "#69b3a2"])
+  	.range(["green", "red"])
   	.domain([min_value, max_value])
 
-	const x = d3.scaleBand()
+	const y = d3.scaleBand()
 	.range([ 0, width ])
 	.domain(data.map(d => d.group))
-	.padding(0.2);
+
+	const x = d3.scaleBand()
+	.domain(data.map(d => d.entity))
+	.range([ height, 0])
 
 	svg_plot.append("g")
 	.attr("transform", `translate(0, ${height})`)
@@ -255,11 +307,6 @@ function heatmap_plot(data, svg_plot, id_div){
 	.selectAll("text")
 	.attr("transform", "translate(-10,0)rotate(-45)")
 	.style("text-anchor", "end");
-
-	const y = d3.scaleBand()
-	.domain(data.map(d => d.entity))
-	.range([ height, 0])
-	.padding(0.1);
 
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
@@ -297,8 +344,8 @@ function heatmap_plot(data, svg_plot, id_div){
 	.data(data, function(d) {return d.group+':'+d.entity;})
     .enter()
     .append("rect")
-	.attr("x", function(d) { return x(d.group) })
-	.attr("y", function(d) { return y(d.entity) })
+	.attr("y", function(d) { return y(d.group) })
+	.attr("x", function(d) { return x(d.entity) })
 	.attr("width", x.bandwidth() )
 	.attr("height", y.bandwidth() )
 	.style("fill", function(d) { return myColor(d.value)} )
@@ -339,6 +386,7 @@ d3.csv("co-emissions-per-capita-last-year-region-comparison.csv", function(d) {
 })
 .then(function (data) {
 	stacked_bar_plot(data, svg_plot3, "#plot3", false);
+	// small_multiples_bar_plot(data, svg_plot4, "#plot4");
 	stacked_bar_plot(data, svg_plot5, "#plot5", true);
 });
 
