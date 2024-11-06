@@ -17,11 +17,36 @@ document.write(`
 document.addEventListener("DOMContentLoaded", function() {
     const navbar = document.createElement("nav");
     navbar.id = "navbar";
-    navbar.innerHTML = `<h1 id="title" style="cursor: pointer;">
-                           <a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none; color: inherit;">
-                               Data Visualization Website
-                           </a>
-                       </h1>`;
+	if (false) { // location.pathname.includes('assignment_1')) {
+		navbar.innerHTML = `
+		<div id="hamburger">
+			<a href="javascript:void(0);" class="icon" onclick="toggleMenu()" style="text-decoration: none; color: inherit;">
+				<i class="fa fa-bars"></i>
+			</a>
+		</div>
+		<div id="title">
+			<h1 style="cursor: pointer;">
+			<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none; color: inherit;">Data Visualization Website</a>
+			</h1>
+		</div>
+		<div id="dropdown-menu" class="dropdown-menu">
+			<a href="#plot1">Plot 1</a>
+			<a href="#plot2">Plot 2</a>
+			<a href="#plot3">Plot 3</a>
+			<a href="#plot4">Plot 4</a>
+			<a href="#plot5">Plot 5</a>
+			<a href="#plot6">Plot 6</a>
+		</div>`;
+		navbar.style.display = "flex";
+	}
+    else {
+		navbar.innerHTML = `
+							<h1 id="title" style="cursor: pointer;">
+							<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none; color: inherit;">
+								Data Visualization Website
+							</a>
+							</h1>`;
+	}
     
     document.body.insertBefore(navbar, document.body.firstChild);
 });
@@ -36,6 +61,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     <span>Chart Troopers:</span>
                     <span>Andrea Stucchi - Marco Cosulich - Riccardo Cicala</span>
                 </div>
+				<div id=footer-center>
+					<span>Universita' di Genova</span>
+				</div>
                 <div id="footer-right">
                     <span>Follow us on:</span>
                     <div id="footer-list">
@@ -48,3 +76,13 @@ document.addEventListener("DOMContentLoaded", function() {
         `;
     }
 });
+
+// NAVBAR Function
+function toggleMenu() {
+	var x = document.getElementById("dropdown-menu");
+	if (x.style.display === "flex") { // w3c dice block entrambi
+		x.style.display = "none";
+  	} else {
+    	x.style.display = "flex";
+  	}
+}
