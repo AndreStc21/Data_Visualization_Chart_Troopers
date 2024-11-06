@@ -2,6 +2,7 @@
 document.write(`
     <meta charset="UTF-8">
     <meta name="theme-color" content="#2e68c0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="${location.pathname.includes('assignment_1') ? '../main.css' : 'main.css'}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,6 +30,21 @@ document.addEventListener("DOMContentLoaded", function() {
 document.addEventListener("DOMContentLoaded", function() {
     const footer = document.getElementById("footer");
     if (footer) {
-        footer.innerHTML = `<span id="span-footer">Cookie</span>`;
+        footer.innerHTML = `
+            <div id="footer-container">
+                <div id="footer-left">
+                    <span>Chart Troopers:</span>
+                    <span>Andrea Stucchi - Marco Cosulich - Riccardo Cicala</span>
+                </div>
+                <div id="footer-right">
+                    <span>Follow us on:</span>
+                    <div id="footer-list">
+                        <span><i class="fab fa-twitter"></i> Twitter</span>
+                        <span><i class="fab fa-instagram"></i> Instagram</span>
+                        <span><i class="fab fa-linkedin"></i> LinkedIn</span>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 });
