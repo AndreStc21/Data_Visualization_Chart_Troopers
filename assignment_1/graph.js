@@ -83,7 +83,7 @@ function bar_plot(data, svg_plot, id_div){
 		d3.selectAll(id_div+"  rect").style("opacity", 0.2);
 		d3.select(this).style("opacity", 1);
 		info = d3.select(this).datum();
-		tooltip.html("Country: " + info.entity + "<br>" + "CO2 emissions: " + info.emissions).style("opacity", 1);
+		tooltip.html("Country: " + info.entity + "<br>" + "CO2 emissions: " + info.emissions + " tonnes").style("opacity", 1);
 	}
 
 	var mousemove = function(event, d) {
@@ -190,7 +190,12 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 		d3.select(this).style("opacity", 1);
 		info = d3.select(this).datum();
 		info_parent = d3.select(this.parentNode).datum();
-		tooltip.html("Rank: " + info_parent.key + "<br>" + "Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key]).style("opacity", 1);
+		if(normalized){
+			tooltip.html("Rank: " + info_parent.key + "<br>" + "Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key] + "%").style("opacity", 1);
+		}
+		else{
+			tooltip.html("Rank: " + info_parent.key + "<br>" + "Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key] + " tonnes").style("opacity", 1);
+		}
 	}
 
 	var mousemove = function(event, d) {
@@ -328,7 +333,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 		};
 
 		const mousemove = function(event, d) {
-			tooltip.html("<br>Rank: " + rank + "<br>Location: " + d.entity + "<br>CO2 emissions: " + d.emissions)
+			tooltip.html("<br>Rank: " + rank + "<br>Location: " + d.entity + "<br>CO2 emissions: " + d.emissions + " tonnes")
 				.style("left", (event.pageX + 20) + "px")
 				.style("top", (event.pageY) + "px");
 		};
@@ -520,7 +525,7 @@ function heatmap_plot(data, svg_plot, id_div){
 		d3.selectAll(id_div+"  rect").style("opacity", 0.2);
 		d3.select(this).style("opacity", 1);
 		info = d3.select(this).datum();
-		tooltip.html("Country: " + info.entity + "<br>" + "Value: " + info.value).style("opacity", 1);
+		tooltip.html("Country: " + info.entity + "<br>" + "Value: " + info.value + " tonnes").style("opacity", 1);
 	}
 
 	var mousemove = function(event, d) {
