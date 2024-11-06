@@ -23,12 +23,7 @@ const svg_plot3 = d3.select("#plot3")
 .append("g")
 .attr("transform", `translate(${margin.left},${margin.top})`);
 
-const svg_plot4 = d3.select("#plot4")
-.append("svg")
-.attr("width", width + margin.left + margin.right)
-.attr("height", height + margin.top + margin.bottom)
-.append("g")
-.attr("transform", `translate(${margin.left},${margin.top})`);
+const svg_plot4 = d3.select("#plot4");
 
 const svg_plot5 = d3.select("#plot5")
 .append("svg")
@@ -275,7 +270,188 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 // 	.attr("x", d => 0)
 // 	.attr("width", d => function(d) {return x(d.emissions)})
 // 	.attr("height", y.bandwidth());
-// }
+
+function small_multiples_bar_plot(data, svg_container, id_div) {
+    // Group data by rank
+    const sumstat = d3.group(data, d => d.rank);
+    const max_value = d3.max(data, d => d.emissions);
+
+    const n_plots = 6;
+    const multiples_width = width/n_plots; // Adjust width based on the total row width you desire
+    const multiples_height = height;
+
+    const color = d3.scaleOrdinal()
+        .domain(Array.from(new Set(data.map(d => d.rank))))
+        .range(['#5778a4', '#e49444', '#d1615d','#85b6b2','#6a9f58', '#e7ca60']);
+
+    // Prepare SVG container as a flex or grid container
+    d3.select(id_div)
+        .style("display", "flex")
+        .style("flex-wrap", "wrap")
+        .style("justify-content", "space-evenly");
+	
+    // Loop over each rank to create a plot for each
+    sumstat.forEach((rankData, rank) => {
+		console.log(rank);
+        const svg = d3.select(id_div)
+            .append("svg")
+            .attr("width", multiples_width + margin.left + margin.right)
+            .attr("height", multiples_height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Scales
+        const x = d3.scaleLinear()
+            .domain([0, max_value * 1.1])
+            .range([0, multiples_width]);
+        
+        const y = d3.scaleBand()
+            .domain(rankData.map(d => d.region))
+            .range([0, multiples_height])
+            .padding(0.2);
+
+		// Tooltip
+		const tooltip = d3.select("body")
+			.append("div")
+			.style("opacity", 0)
+			.attr("class", "tooltip")
+			.style("background-color", "white")
+			.style("border", "solid")
+			.style("border-width", "1px")
+			.style("border-radius", "5px")
+			.style("padding", "10px")
+			.style("position", "absolute");
+
+		const mouseover = function(event, d) {
+			tooltip.style("opacity", 1);
+			d3.select(this).style("opacity", 1);
+		};
+
+		const mousemove = function(event, d) {
+			tooltip.html("<br>Rank: " + rank + "<br>Location: " + d.entity + "<br>CO2 emissions: " + d.emissions)
+				.style("left", (event.pageX + 20) + "px")
+				.style("top", (event.pageY) + "px");
+		};
+
+		const mouseleave = function(event, d) {
+			tooltip.style("opacity", 0);
+			d3.select(this).style("opacity", 0.8);
+		};
+
+        // X and Y axes
+        svg.append("g")
+            .attr("transform", `translate(0, ${height})`)
+            .call(d3.axisBottom(x).ticks(3));
+
+        svg.append("g")
+            .call(d3.axisLeft(y).tickSize(0).tickPadding(6));
+
+        // Bars
+        svg.selectAll("rect")
+            .data(rankData)
+            .join("rect")
+            .attr("x", 0)
+            .attr("y", d => y(d.region))
+            .attr("width", d => x(d.emissions))
+            .attr("height", y.bandwidth())
+            .attr("fill", color(rank))
+            .style("opacity", 0.8)
+			.on("mouseover", mouseover)
+			.on("mousemove", mousemove)
+			.on("mouseleave", mouseleave);
+    });
+}
+
+// tried to make it prettier
+/* 	function small_multiples_bar_plot(data, svg_container, id_div) {
+		// Group data by rank
+		const sumstat = d3.group(data, d => d.rank);
+		const max_value = d3.max(data, d => d.emissions);
+	
+		const n_plots = 6;
+		const multiples_width = width / n_plots;
+		const multiples_height = height;
+	
+		const color = d3.scaleOrdinal()
+			.domain(Array.from(new Set(data.map(d => d.rank))))
+			.range(['#5778a4', '#e49444', '#d1615d', '#85b6b2', '#6a9f58', '#e7ca60']);
+	
+		// Shared Y-axis scale for regions
+		const y = d3.scaleBand()
+			.domain(Array.from(new Set(data.map(d => d.region))))
+			.range([0, multiples_height])
+			.padding(0.2);
+	
+		// Create shared y-axis in the main SVG container
+		const svg = d3.select(id_div)
+			.append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", `translate(${margin.left},${margin.top})`);
+	
+		svg.append("g")
+			.call(d3.axisLeft(y).tickSize(0).tickPadding(6));
+	
+		// Create a container for each small multiple
+		sumstat.forEach((rankData, rank) => {
+			const multiple = svg.append("g")
+				.attr("transform", `translate(${rank * multiples_width + margin.left},0)`);
+	
+			// X-scale for each small multiple
+			const x = d3.scaleLinear()
+				.domain([0, max_value * 1.1])
+				.range([0, multiples_width]);
+	
+			// Tooltip
+			const tooltip = d3.select("body")
+				.append("div")
+				.style("opacity", 0)
+				.attr("class", "tooltip")
+				.style("background-color", "white")
+				.style("border", "solid")
+				.style("border-width", "1px")
+				.style("border-radius", "5px")
+				.style("padding", "10px")
+				.style("position", "absolute");
+	
+			const mouseover = function(event, d) {
+				tooltip.style("opacity", 1);
+				d3.select(this).style("opacity", 1);
+			};
+	
+			const mousemove = function(event, d) {
+				tooltip.html("Country: " + d.entity + "<br>Rank: " + rank + "<br>CO2 emissions: " + d.emissions)
+					.style("left", (event.pageX + 20) + "px")
+					.style("top", (event.pageY) + "px");
+			};
+	
+			const mouseleave = function(event, d) {
+				tooltip.style("opacity", 0);
+				d3.select(this).style("opacity", 0.8);
+			};
+	
+			// X-axis for each small multiple
+			multiple.append("g")
+				.attr("transform", `translate(0, ${multiples_height})`)
+				.call(d3.axisBottom(x).ticks(3));
+	
+			// Bars for each rank
+			multiple.selectAll("rect")
+				.data(rankData)
+				.join("rect")
+				.attr("x", 0)
+				.attr("y", d => y(d.region))
+				.attr("width", d => x(d.emissions))
+				.attr("height", y.bandwidth())
+				.attr("fill", color(rank))
+				.style("opacity", 0.8)
+				.on("mouseover", mouseover)
+				.on("mousemove", mousemove)
+				.on("mouseleave", mouseleave);
+		});
+	} */
+	
 
 function heatmap_plot(data, svg_plot, id_div){
 	var max_value_fossil = 0;
@@ -402,7 +578,7 @@ d3.csv("co-emissions-per-capita-last-year-region-comparison.csv", function(d) {
 })
 .then(function (data) {
 	stacked_bar_plot(data, svg_plot3, "#plot3", false);
-	// small_multiples_bar_plot(data, svg_plot4, "#plot4");
+	small_multiples_bar_plot(data, svg_plot4, "#plot4");
 	stacked_bar_plot(data, svg_plot5, "#plot5", true);
 });
 
