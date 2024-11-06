@@ -36,6 +36,10 @@ nav {
 	height: 6.5rem;
 }
 
+#dropdown-menu {
+	display: none;
+}
+
 #title {
 	margin: 0;
 }
@@ -76,13 +80,14 @@ nav {
 
 .large-description {
     width: 550px;
-    height: 450px;
+    height: 300px;
     display: flex;
     font-size: large;
     line-height: 1.7;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+	text-align: center;
 }
 
 #footer {
@@ -99,13 +104,18 @@ nav {
 
 #footer-container {
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-evenly;
 }
 
 #footer-left {
 	display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+#footer-center {
+	display: flex;
+    align-items: center;
 }
 
 #footer-right {
@@ -123,12 +133,4 @@ nav {
 
 span {
 	margin: 4px;
-}
-
-#span-footer {
-	color: whitesmoke;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 }
