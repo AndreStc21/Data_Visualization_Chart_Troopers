@@ -1,13 +1,13 @@
 body {
-    margin: 0;
-	font-family: 'Fira Sans';
+	margin: 0;
+	font-family: "Fira Sans";
 }
 
 #page-container {
 	position: relative;
 	min-height: 100vh;
 }
-  
+
 #content-wrap {
 	padding-bottom: 3rem;
 }
@@ -16,16 +16,21 @@ body {
 	text-align: center;
 }
 
-h1, h2, h3, h4, h5, h6 {
-	font-family: 'Roboto Slab';
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Roboto Slab";
 }
 
 nav {
 	font-size: 22px;
 	margin: 0;
 	display: flex;
-    align-items: center;
-    justify-content: center;
+	align-items: center;
+	justify-content: center;
 	background-color: #2e68c0;
 	color: whitesmoke;
 	height: 5.5rem;
@@ -35,30 +40,49 @@ nav {
 	margin: 0;
 }
 
-#graph-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#total-graph-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	margin-top: 50px;
 	margin-bottom: 20px;
 }
-  
+
+.graph-container {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.graph-titles {
+	margin: 0;
+}
+
+.description {
+	width: 550px;
+    height: 550px;
+    display: flex;
+    font-size: large;
+    line-height: 1.7;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
 #footer {
-	position: absolute;
+	position: relative;
 	bottom: 0;
 	width: 100%;
-	height: 3.5rem;
-	
+	height: 9rem;
+
 	background-color: #2e68c0;
 	text-align: center;
 	align-content: center;
 }
 
-#span-footer
-{
+#span-footer {
 	color: whitesmoke;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
