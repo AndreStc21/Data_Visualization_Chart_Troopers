@@ -341,7 +341,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
         // X and Y axes
         svg.append("g")
             .attr("transform", `translate(0, ${height})`)
-            .call(d3.axisBottom(x).ticks(3));
+            .call(d3.axisBottom(x).ticks(1));
 
         svg.append("g")
             .call(d3.axisLeft(y).tickSize(0).tickPadding(6));
@@ -568,11 +568,11 @@ d3.csv("co-emissions-per-capita-last-decade.csv", function(d) {
 	bar_plot(data, svg_plot2, "#plot2");
 });
 
-d3.csv("co-emissions-per-capita-last-year-region-comparison.csv", function(d) {
+d3.csv("co-emissions-last-year-region-comparison.csv", function(d) {
 	return {
 		region: d.Region,
 		entity: d.Entity,
-		emissions: +d['Annual CO2 emissions (per capita)'],
+		emissions: +d['Annual CO2 emissions'],
 		rank: d.Rank
 	  };
 })
