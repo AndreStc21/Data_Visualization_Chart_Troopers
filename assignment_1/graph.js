@@ -66,7 +66,7 @@ function bar_plot(data, svg_plot, id_div){
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
 
-	var tooltip = d3.select("body")
+	var tooltip = d3.select("#content-wrap")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
@@ -172,7 +172,7 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
 
-	var tooltip = d3.select("body")
+	var tooltip = d3.select("#content-wrap")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
@@ -316,7 +316,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
             .padding(0.2);
 
 		// Tooltip
-		const tooltip = d3.select("body")
+		const tooltip = d3.select("#content-wrap")
 			.append("div")
 			.style("opacity", 0)
 			.attr("class", "tooltip")
@@ -409,7 +409,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 				.range([0, multiples_width]);
 	
 			// Tooltip
-			const tooltip = d3.select("body")
+			const tooltip = d3.select("#content-wrap")
 				.append("div")
 				.style("opacity", 0)
 				.attr("class", "tooltip")
@@ -508,7 +508,7 @@ function heatmap_plot(data, svg_plot, id_div){
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
 
-	var tooltip = d3.select("body")
+	var tooltip = d3.select("#content-wrap")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
