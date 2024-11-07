@@ -194,7 +194,7 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 			tooltip.html("Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key] + "%").style("opacity", 1);
 		}
 		else{
-			tooltip.html("Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key] + " tonnes").style("opacity", 1);
+			tooltip.html("Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key] + " millions tonnes").style("opacity", 1);
 		}
 	}
 
@@ -334,7 +334,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 		};
 
 		const mousemove = function(event, d) {
-			tooltip.html("Location: " + d.entity + "<br>CO2 emissions: " + d.emissions + " tonnes")
+			tooltip.html("Location: " + d.entity + "<br>CO2 emissions: " + d.emissions + " millions tonnes")
 				.style("left", (event.pageX + 20) + "px")
 				.style("top", (event.pageY) + "px");
 		};
@@ -526,7 +526,7 @@ function heatmap_plot(data, svg_plot, id_div){
 		d3.selectAll(id_div+"  rect").style("opacity", 0.2);
 		d3.select(this).style("opacity", 1);
 		info = d3.select(this).datum();
-		tooltip.html("Country: " + info.entity + "<br>" + "Value: " + info.value + " tonnes").style("opacity", 1);
+		tooltip.html("Country: " + info.entity + "<br>" + "Value: " + info.value + " millions tonnes").style("opacity", 1);
 	}
 
 	var mousemove = function(event, d) {

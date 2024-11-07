@@ -1,21 +1,21 @@
 ,Entity,Code,Group,Value
-0,China,CHN,fossil,11400000000.0
-1,United States,USA,fossil,5060000000.0
-2,India,IND,fossil,2830000000.0
-3,Russia,RUS,fossil,1650000000.0
-4,Japan,JPN,fossil,1050000000.0
-5,Indonesia,IDN,fossil,730000000.0
-6,Iran,IRN,fossil,690000000.0
-7,Germany,DEU,fossil,670000000.0
-8,Saudi Arabia,SAU,fossil,660000000.0
-9,South Korea,KOR,fossil,600000000.0
-10,China,CHN,land,981500000.0
-11,United States,USA,land,141700000.0
-12,India,IND,land,34400000.0
-13,Russia,RUS,land,313000000.0
-14,Japan,JPN,land,4200000.0
-15,Indonesia,IDN,land,918600000.0
-16,Iran,IRN,land,-13200000.0
-17,Germany,DEU,land,-8100000.0
-18,Saudi Arabia,SAU,land,4000000.0
-19,South Korea,KOR,land,-6600000.0
+0,China,CHN,fossil,11400
+1,United States,USA,fossil,5060
+2,India,IND,fossil,2830
+3,Russia,RUS,fossil,1650
+4,Japan,JPN,fossil,1050
+5,Indonesia,IDN,fossil,730
+6,Iran,IRN,fossil,690
+7,Germany,DEU,fossil,670
+8,Saudi Arabia,SAU,fossil,660
+9,South Korea,KOR,fossil,600
+10,China,CHN,land,981
+11,United States,USA,land,141
+12,India,IND,land,34
+13,Russia,RUS,land,313
+14,Japan,JPN,land,4
+15,Indonesia,IDN,land,918
+16,Iran,IRN,land,-13
+17,Germany,DEU,land,-8
+18,Saudi Arabia,SAU,land,4
+19,South Korea,KOR,land,-6
