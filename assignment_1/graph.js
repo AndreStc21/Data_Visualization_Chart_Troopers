@@ -129,7 +129,7 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 		for(let i=0; i<6; i++){
 			let value_region = 0;
 			subgroups.forEach(j => value_region += nestedData[i][j])
-			subgroups.forEach(j => nestedData[i][j] = nestedData[i][j]/value_region*100)
+			subgroups.forEach(j => nestedData[i][j] = parseFloat((nestedData[i][j] / value_region * 100).toFixed(1)));
 		}
 	}
 
