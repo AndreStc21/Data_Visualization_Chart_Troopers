@@ -1,6 +1,7 @@
 const margin = {top: 30, right: 30, bottom: 100, left: 100},
 width = 550 - margin.left - margin.right,
 height = 550 - margin.top - margin.bottom;
+const colours = ['#4C6A92', '#F28C3B', '#D35C63', '#67A9A5', '#7C9F5D', '#F1C04A'];
 
 const svg_plot1 = d3.select("#plot1")
 .append("svg")
@@ -91,7 +92,7 @@ function bar_plot(data, svg_plot, id_div){
 	}
 
 	var mouseleave = function(event, d) {
-		d3.selectAll(id_div+" rect").style("opacity",0.8);
+		d3.selectAll(id_div+" rect").style("opacity", 1);
 		tooltip.style("opacity", 0);
 	}
 
@@ -203,13 +204,13 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	}
 
 	var mouseleave = function(event, d) {
-		d3.selectAll(id_div+" rect").style("opacity",0.8);
+		d3.selectAll(id_div+" rect").style("opacity", 1);
 		tooltip.style("opacity", 0);
 	}
 
 	const color = d3.scaleOrdinal()
 	.domain(subgroups)
-	.range(['#5778a4', '#e49444', '#d1615d','#85b6b2','#6a9f58', '#e7ca60']);
+	.range(colours);
 
 	const stackedData = d3.stack()
     .keys(subgroups)
@@ -287,7 +288,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 
     const color = d3.scaleOrdinal()
         .domain(Array.from(new Set(data.map(d => d.rank))))
-        .range(['#5778a4', '#e49444', '#d1615d','#85b6b2','#6a9f58', '#e7ca60']);
+        .range(colours);
 
     // Prepare SVG container as a flex or grid container
     d3.select(id_div)
@@ -341,7 +342,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 
 		const mouseleave = function(event, d) {
 			tooltip.style("opacity", 0);
-			d3.selectAll(id_div+" rect").style("opacity",0.8);
+			d3.selectAll(id_div+" rect").style("opacity", 1);
 		};
 
         // X and Y axes
@@ -361,7 +362,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
             .attr("width", d => x(d.emissions))
             .attr("height", y.bandwidth())
             .attr("fill", color(rank))
-            .style("opacity", 0.8)
+            .style("opacity", 1)
 			.on("mouseover", mouseover)
 			.on("mousemove", mousemove)
 			.on("mouseleave", mouseleave);
@@ -534,7 +535,7 @@ function heatmap_plot(data, svg_plot, id_div){
 	}
 
 	var mouseleave = function(event, d) {
-		d3.selectAll(id_div+" rect").style("opacity",0.8);
+		d3.selectAll(id_div+" rect").style("opacity", 1);
 		tooltip.style("opacity", 0);
 	}
 
