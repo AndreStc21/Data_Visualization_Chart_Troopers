@@ -191,10 +191,10 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 		info = d3.select(this).datum();
 		info_parent = d3.select(this.parentNode).datum();
 		if(normalized){
-			tooltip.html("Rank: " + info_parent.key + "<br>" + "Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key] + "%").style("opacity", 1);
+			tooltip.html("Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key] + "%").style("opacity", 1);
 		}
 		else{
-			tooltip.html("Rank: " + info_parent.key + "<br>" + "Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key] + " tonnes").style("opacity", 1);
+			tooltip.html("Location: " + mapping_entity[info.data.region+info_parent.key] + "<br>" + "Value: " + info.data[info_parent.key] + " tonnes").style("opacity", 1);
 		}
 	}
 
@@ -334,7 +334,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 		};
 
 		const mousemove = function(event, d) {
-			tooltip.html("<br>Rank: " + rank + "<br>Location: " + d.entity + "<br>CO2 emissions: " + d.emissions + " tonnes")
+			tooltip.html("Location: " + d.entity + "<br>CO2 emissions: " + d.emissions + " tonnes")
 				.style("left", (event.pageX + 20) + "px")
 				.style("top", (event.pageY) + "px");
 		};
