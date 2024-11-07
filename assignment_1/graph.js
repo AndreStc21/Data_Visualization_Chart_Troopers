@@ -307,7 +307,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 
         // Scales
         const x = d3.scaleLinear()
-            .domain([0, max_value * 1.1])
+            .domain([0, max_value])
             .range([0, multiples_width]);
         
         const y = d3.scaleBand()
@@ -329,6 +329,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 
 		const mouseover = function(event, d) {
 			tooltip.style("opacity", 1);
+			d3.selectAll(id_div+"  rect").style("opacity", 0.2);
 			d3.select(this).style("opacity", 1);
 		};
 
@@ -340,7 +341,7 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 
 		const mouseleave = function(event, d) {
 			tooltip.style("opacity", 0);
-			d3.select(this).style("opacity", 0.8);
+			d3.selectAll(id_div+" rect").style("opacity",0.8);
 		};
 
         // X and Y axes
