@@ -1,37 +1,37 @@
-,index,Region,Entity,Annual CO2 emissions,Rank
-5,5,Africa,South Africa,428,1.0
-1,1,Africa,Egypt,268,2.0
-0,0,Africa,Algeria,182,3.0
-3,3,Africa,Nigeria,139,4.0
-2,2,Africa,Morocco,68,5.0
-4,4,Africa,Other,368,6.0
-6,6,Asia,China,11354,1.0
-7,7,Asia,India,2901,2.0
-10,10,Asia,Japan,1051,3.0
-8,8,Asia,Indonesia,737,4.0
-9,9,Asia,Iran,714,5.0
-11,11,Asia,Other,5151,6.0
-16,16,Europe,Russia,1650,1.0
-12,12,Europe,Germany,676,2.0
-13,13,Europe,Italy,338,3.0
-17,17,Europe,United Kingdom,324,4.0
-15,15,Europe,Poland,312,5.0
-14,14,Europe,Other,1582,6.0
-23,23,North America,United States,5146,1.0
-18,18,North America,Canada,564,2.0
-20,20,North America,Mexico,523,3.0
-22,22,North America,Trinidad and Tobago,35,4.0
-19,19,North America,Dominican Republic,23,5.0
-21,21,North America,Other,101,6.0
-24,24,Oceania,Australia,400,1.0
-26,26,Oceania,New Zealand,31,2.0
-28,28,Oceania,Papua New Guinea,8,3.0
-25,25,Oceania,Fiji,1,4.0
-29,29,Oceania,Solomon Islands,0,5.0
-27,27,Oceania,Other,1,6.0
-31,31,South America,Brazil,466,1.0
-30,30,South America,Argentina,191,2.0
-33,33,South America,Colombia,100,3.0
-32,32,South America,Chile,84,4.0
-35,35,South America,Venezuela,76,5.0
-34,34,South America,Other,150,6.0
+index,Region,Entity,Annual CO2 emissions,Rank
+6,Asia,China,11354,1.0
+7,Asia,India,2901,2.0
+10,Asia,Japan,1051,3.0
+8,Asia,Indonesia,737,4.0
+9,Asia,Iran,714,5.0
+11,Asia,Other,5151,6.0
+23,North America,United States,5146,1.0
+18,North America,Canada,564,2.0
+20,North America,Mexico,523,3.0
+22,North America,Trinidad and Tobago,35,4.0
+19,North America,Dominican Republic,23,5.0
+21,North America,Other,101,6.0
+16,Europe,Russia,1650,1.0
+12,Europe,Germany,676,2.0
+13,Europe,Italy,338,3.0
+17,Europe,United Kingdom,324,4.0
+15,Europe,Poland,312,5.0
+14,Europe,Other,1582,6.0
+5,Africa,South Africa,428,1.0
+1,Africa,Egypt,268,2.0
+0,Africa,Algeria,182,3.0
+3,Africa,Nigeria,139,4.0
+2,Africa,Morocco,68,5.0
+4,Africa,Other,368,6.0
+31,South America,Brazil,466,1.0
+30,South America,Argentina,191,2.0
+33,South America,Colombia,100,3.0
+32,South America,Chile,84,4.0
+35,South America,Venezuela,76,5.0
+34,South America,Other,150,6.0
+24,Oceania,Australia,400,1.0
+26,Oceania,New Zealand,31,2.0
+28,Oceania,Papua New Guinea,8,3.0
+25,Oceania,Fiji,1,4.0
+29,Oceania,Solomon Islands,0,5.0
+27,Oceania,Other,1,6.0
