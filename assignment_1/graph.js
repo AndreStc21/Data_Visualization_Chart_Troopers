@@ -40,6 +40,16 @@ const svg_plot6 = d3.select("#plot6")
 .append("g")
 .attr("transform", `translate(${margin.left},${margin.top})`);
 
+function add_axis_label(svg_plot, x, y, transform, text_anchor, label){
+	svg_plot.append("text")
+	.attr("text-anchor", text_anchor)
+	.attr("x", x)
+	.attr("y", y)
+	.attr("transform", transform)
+	.text(label)
+
+}
+
 function bar_plot(data, svg_plot, id_div){
 	var max_value = 0;
 	data.forEach(d => {
@@ -58,7 +68,9 @@ function bar_plot(data, svg_plot, id_div){
 	.call(d3.axisBottom(x))
 	.selectAll("text")
 	.attr("transform", "translate(-10,0)rotate(-45)")
-	.style("text-anchor", "end");
+	.style("text-anchor", "end")
+
+	add_axis_label(svg_plot, width / 2, height + margin.bottom - 5, "", "middle", "Country");
 
 	const y = d3.scaleLinear()
 	.domain([0, max_value+(0.1*max_value)])
@@ -66,6 +78,8 @@ function bar_plot(data, svg_plot, id_div){
 
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
+
+	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "CO2 emissions (per capita (millions tonnes)");
 
 	var tooltip = d3.select("#content-wrap")
     .append("div")
@@ -145,16 +159,17 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	}
 
 	// Add X axis
+	/* legend_width = 50; */
 	var x;
 	if(normalized){
 		x = d3.scaleLinear()
 		.domain([0, max_value])
-		.range([0, width]);
+		.range([0, width]); /* width-legend_width-10]); */
 	}
 	else{
 		x = d3.scaleLinear()
 		.domain([0, max_value+(0.1*max_value)])
-		.range([0, width]);
+		.range([0, width]); /* width-legend_width-10]); */
 	}
 	
 	svg_plot.append("g")
@@ -164,6 +179,8 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	.attr("transform", "translate(-10,0)rotate(-45)")
 	.style("text-anchor", "end");
 
+	add_axis_label(svg_plot, width / 2, height + margin.bottom - 5, "", "middle", "CO2 emissions (per capita (millions tonnes)");
+
 	// Add Y axis
 	const y = d3.scaleBand()
 	.range([0, height])
@@ -172,6 +189,8 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
+
+	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "Region");
 
 	var tooltip = d3.select("#content-wrap")
     .append("div")
@@ -234,50 +253,39 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	.on("mouseover", mouseover)
 	.on("mousemove", mousemove)
     .on("mouseleave", mouseleave);
+
+
+	// Add legend in the top-right corner of the chart
+	/* const legendOffsetX = width - legend_width; // Adjust for legend's width
+	const legendOffsetY = 10;  // Small offset from the top
+
+	const svgLegend = svg_plot.append("g")
+		.attr("transform", `translate(${legendOffsetX}, ${legendOffsetY})`);
+
+	// Add one dot in the legend for each name
+	svgLegend.selectAll("mydots")
+		.data(subgroups)
+		.enter()
+		.append("circle")
+			.attr("cx", 10)  // Position circle inside legend group
+			.attr("cy", (d, i) => 10 + i * 25)  // 10 is where the first dot appears, 25 is spacing
+			.attr("r", 7)
+			.style("fill", d => color(d));
+
+	// Add text labels for each dot in the legend
+	svgLegend.selectAll("mylabels")
+		.data(subgroups)
+		.enter()
+		.append("text")
+			.attr("x", 30)  // Position text to the right of the dots
+			.attr("y", (d, i) => 10 + i * 25)
+			.style("fill", d => color(d))
+			.text(d => "Rank " + d)
+			.attr("text-anchor", "left")
+			.style("alignment-baseline", "middle"); */
 }
 
-// function small_multiples_bar_plot(data, svg_plot, id_div){
-// 	const sumstat = d3.group(data, d => d.rank);
-// 	const allKeys = new Set(data.map(d=>d.rank));
-// 	const groups = Array.from(new Set(data.map(d => d.region)));
-// 	const subgroups = Array.from(new Set(data.map(d => d.region)));
-// 	const n_plots = allKeys.size;
-
-// 	var max_value = 0;
-// 	data.forEach(d => function(d){
-// 		if(d.emissions>max_value){
-// 			max_value = d.emissions;
-// 		}
-// 	})
-
-// 	const x = d3.scaleLinear()
-// 		.domain([0, max_value+(0.1*max_value)])
-// 		.range([0, width/n_plots]);
-	
-// 	svg
-//     .append("g")
-//     .attr("transform", `translate(0, ${height})`)
-//     .call(d3.axisBottom(x));
-
-// 	const y = d3.scaleLinear()
-//     .domain([groups])
-//     .range([0, height]);
-
-//   	svg.append("g")
-//     .call(d3.axisLeft(y));
-
-// 	const color = d3.scaleOrdinal()
-// 	.domain(subgroups)
-// 	.range(['#5778a4', '#e49444', '#d1615d','#85b6b2','#6a9f58', '#e7ca60']);
-
-// 	svg
-// 	.append("rect")
-// 	.attr("y", d => function(d) {return y(d.region)})
-// 	.attr("x", d => 0)
-// 	.attr("width", d => function(d) {return x(d.emissions)})
-// 	.attr("height", y.bandwidth());
-
-function small_multiples_bar_plot(data, svg_container, id_div) {
+function small_multiples_bar_plot(data, id_div) {
     // Group data by rank
     const sumstat = d3.group(data, d => d.rank);
     const max_value = d3.max(data, d => d.emissions);
@@ -351,7 +359,12 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
             .call(d3.axisBottom(x).ticks(1));
 
         svg.append("g")
-            .call(d3.axisLeft(y).tickSize(0).tickPadding(6));
+            .call(d3.axisLeft(y).tickSize(0).tickPadding(6))
+			.selectAll(".tick text")
+			.style("opacity", rank == 1.0 ? 1 : 0);
+			
+		if(rank == 1.0)
+			add_axis_label(svg, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "Region");
 
         // Bars
         svg.selectAll("rect")
@@ -368,97 +381,6 @@ function small_multiples_bar_plot(data, svg_container, id_div) {
 			.on("mouseleave", mouseleave);
     });
 }
-
-// tried to make it prettier
-/* 	function small_multiples_bar_plot(data, svg_container, id_div) {
-		// Group data by rank
-		const sumstat = d3.group(data, d => d.rank);
-		const max_value = d3.max(data, d => d.emissions);
-	
-		const n_plots = 6;
-		const multiples_width = width / n_plots;
-		const multiples_height = height;
-	
-		const color = d3.scaleOrdinal()
-			.domain(Array.from(new Set(data.map(d => d.rank))))
-			.range(['#5778a4', '#e49444', '#d1615d', '#85b6b2', '#6a9f58', '#e7ca60']);
-	
-		// Shared Y-axis scale for regions
-		const y = d3.scaleBand()
-			.domain(Array.from(new Set(data.map(d => d.region))))
-			.range([0, multiples_height])
-			.padding(0.2);
-	
-		// Create shared y-axis in the main SVG container
-		const svg = d3.select(id_div)
-			.append("svg")
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-			.append("g")
-			.attr("transform", `translate(${margin.left},${margin.top})`);
-	
-		svg.append("g")
-			.call(d3.axisLeft(y).tickSize(0).tickPadding(6));
-	
-		// Create a container for each small multiple
-		sumstat.forEach((rankData, rank) => {
-			const multiple = svg.append("g")
-				.attr("transform", `translate(${rank * multiples_width + margin.left},0)`);
-	
-			// X-scale for each small multiple
-			const x = d3.scaleLinear()
-				.domain([0, max_value * 1.1])
-				.range([0, multiples_width]);
-	
-			// Tooltip
-			const tooltip = d3.select("#content-wrap")
-				.append("div")
-				.style("opacity", 0)
-				.attr("class", "tooltip")
-				.style("background-color", "white")
-				.style("border", "solid")
-				.style("border-width", "1px")
-				.style("border-radius", "5px")
-				.style("padding", "10px")
-				.style("position", "absolute");
-	
-			const mouseover = function(event, d) {
-				tooltip.style("opacity", 1);
-				d3.select(this).style("opacity", 1);
-			};
-	
-			const mousemove = function(event, d) {
-				tooltip.html("Country: " + d.entity + "<br>Rank: " + rank + "<br>CO2 emissions: " + d.emissions)
-					.style("left", (event.pageX + 20) + "px")
-					.style("top", (event.pageY) + "px");
-			};
-	
-			const mouseleave = function(event, d) {
-				tooltip.style("opacity", 0);
-				d3.select(this).style("opacity", 0.8);
-			};
-	
-			// X-axis for each small multiple
-			multiple.append("g")
-				.attr("transform", `translate(0, ${multiples_height})`)
-				.call(d3.axisBottom(x).ticks(3));
-	
-			// Bars for each rank
-			multiple.selectAll("rect")
-				.data(rankData)
-				.join("rect")
-				.attr("x", 0)
-				.attr("y", d => y(d.region))
-				.attr("width", d => x(d.emissions))
-				.attr("height", y.bandwidth())
-				.attr("fill", color(rank))
-				.style("opacity", 0.8)
-				.on("mouseover", mouseover)
-				.on("mousemove", mousemove)
-				.on("mouseleave", mouseleave);
-		});
-	} */
-	
 
 function heatmap_plot(data, svg_plot, id_div){
 	var max_value_fossil = 0;
@@ -507,8 +429,12 @@ function heatmap_plot(data, svg_plot, id_div){
 	.attr("transform", "translate(-10,0)rotate(-45)")
 	.style("text-anchor", "end");
 
+	add_axis_label(svg_plot, width / 2, height + margin.bottom - 5, "", "middle", "Country");
+
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
+
+	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "Emission Type");
 
 	var tooltip = d3.select("#content-wrap")
     .append("div")
@@ -585,7 +511,7 @@ d3.csv("co-emissions-last-year-region-comparison.csv", function(d) {
 })
 .then(function (data) {
 	stacked_bar_plot(data, svg_plot3, "#plot3", false);
-	small_multiples_bar_plot(data, svg_plot4, "#plot4");
+	small_multiples_bar_plot(data, "#plot4");
 	stacked_bar_plot(data, svg_plot5, "#plot5", true);
 });
 
