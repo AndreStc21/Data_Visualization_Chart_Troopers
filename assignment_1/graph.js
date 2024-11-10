@@ -79,7 +79,7 @@ function bar_plot(data, svg_plot, id_div){
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
 
-	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "CO2 emissions per capita (millions tonnes)");
+	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "CO2 emissions per capita (tonnes)");
 
 	var tooltip = d3.select("#content-wrap")
     .append("div")
@@ -102,7 +102,7 @@ function bar_plot(data, svg_plot, id_div){
 	}
 
 	var mousemove = function(event, d) {
-		tooltip.style('left', (event.pageX+20) + 'px').style('top', (event.pageY) + 'px');
+		tooltip.style('left', (event.pageX+20) + 'px').style('top', (event.pageY-100) + 'px');
 	}
 
 	var mouseleave = function(event, d) {
@@ -179,7 +179,8 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	.attr("transform", "translate(-10,0)rotate(-45)")
 	.style("text-anchor", "end");
 
-	add_axis_label(svg_plot, width / 2, height + margin.bottom - 5, "", "middle", "CO2 emissions per capita (millions tonnes)");
+	label_x = normalized ? "CO2 emissions (%)" : "CO2 emissions (millions tonnes)"
+	add_axis_label(svg_plot, width / 2, height + margin.bottom - 5, "", "middle", label_x);
 
 	// Add Y axis
 	const y = d3.scaleBand()
@@ -219,7 +220,7 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	}
 
 	var mousemove = function(event, d) {
-		tooltip.style('left', (event.pageX+20) + 'px').style('top', (event.pageY) + 'px');
+		tooltip.style('left', (event.pageX+20) + 'px').style('top', (event.pageY-100) + 'px');
 	}
 
 	var mouseleave = function(event, d) {
@@ -345,7 +346,7 @@ function small_multiples_bar_plot(data, id_div) {
 		const mousemove = function(event, d) {
 			tooltip.html("Location: " + d.entity + "<br>CO2 emissions: " + d.emissions + " millions tonnes")
 				.style("left", (event.pageX + 20) + "px")
-				.style("top", (event.pageY) + "px");
+				.style("top", (event.pageY-100) + "px");
 		};
 
 		const mouseleave = function(event, d) {
@@ -363,8 +364,10 @@ function small_multiples_bar_plot(data, id_div) {
 			.selectAll(".tick text")
 			.style("opacity", rank == 1.0 ? 1 : 0);
 			
-		if(rank == 1.0)
+		if(rank == 1.0){
 			add_axis_label(svg, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "Region");
+			add_axis_label(svg, 45, height + margin.bottom - 40, "", "middle", "CO2 emissions");
+		}
 
         // Bars
         svg.selectAll("rect")
@@ -457,7 +460,7 @@ function heatmap_plot(data, svg_plot, id_div){
 	}
 
 	var mousemove = function(event, d) {
-		tooltip.style('left', (event.pageX+20) + 'px').style('top', (event.pageY) + 'px');
+		tooltip.style('left', (event.pageX+20) + 'px').style('top', (event.pageY-100) + 'px');
 	}
 
 	var mouseleave = function(event, d) {
