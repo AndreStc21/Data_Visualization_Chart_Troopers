@@ -79,7 +79,7 @@ function bar_plot(data, svg_plot, id_div){
 	svg_plot.append("g")
 	.call(d3.axisLeft(y));
 
-	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "CO2 emissions (per capita (millions tonnes)");
+	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "CO2 emissions per capita (millions tonnes)");
 
 	var tooltip = d3.select("#content-wrap")
     .append("div")
@@ -98,7 +98,7 @@ function bar_plot(data, svg_plot, id_div){
 		d3.selectAll(id_div+"  rect").style("opacity", 0.2);
 		d3.select(this).style("opacity", 1);
 		info = d3.select(this).datum();
-		tooltip.html("Country: " + info.entity + "<br>" + "CO2 emissions: " + info.emissions + " tonnes").style("opacity", 1);
+		tooltip.html("CO2 emissions: " + info.emissions + " tonnes").style("opacity", 1);
 	}
 
 	var mousemove = function(event, d) {
@@ -179,7 +179,7 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	.attr("transform", "translate(-10,0)rotate(-45)")
 	.style("text-anchor", "end");
 
-	add_axis_label(svg_plot, width / 2, height + margin.bottom - 5, "", "middle", "CO2 emissions (per capita (millions tonnes)");
+	add_axis_label(svg_plot, width / 2, height + margin.bottom - 5, "", "middle", "CO2 emissions per capita (millions tonnes)");
 
 	// Add Y axis
 	const y = d3.scaleBand()
