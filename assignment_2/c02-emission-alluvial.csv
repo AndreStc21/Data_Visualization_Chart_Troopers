@@ -1,0 +1,19 @@
+,Entity,Code,Year,Annual CO2 emissions including land-use change,land,fossil,Region,Rank
+0,Democratic Republic of Congo,COD,2022,520,512,0,Africa,1.0
+1,South Africa,ZAF,2022,410,1,400,Africa,2.0
+2,Egypt,EGY,2022,260,0,260,Africa,3.0
+3,China,CHN,2022,12380,981,11400,Asia,1.0
+4,India,IND,2022,2860,34,2830,Asia,2.0
+5,Indonesia,IDN,2022,1650,918,730,Asia,3.0
+6,Russia,RUS,2022,1970,313,1650,Europe,1.0
+7,Germany,DEU,2022,660,-8,670,Europe,2.0
+8,United Kingdom,GBR,2022,330,15,320,Europe,3.0
+9,United States,USA,2022,5200,141,5060,North America,1.0
+10,Mexico,MEX,2022,860,350,510,North America,2.0
+11,Canada,CAN,2022,670,117,550,North America,3.0
+12,Australia,AUS,2022,380,-15,390,Oceania,1.0
+13,New Zealand,NZL,2022,30,2,30,Oceania,2.0
+14,Papua New Guinea,PNG,2022,30,22,10,Oceania,3.0
+15,Brazil,BRA,2022,1600,1113,480,South America,1.0
+16,Argentina,ARG,2022,220,26,190,South America,2.0
+17,Colombia,COL,2022,140,37,100,South America,3.0
