@@ -425,7 +425,7 @@ function heatmap_plot(data, svg_plot, id_div){
   	.range(["green", "white", "red"])
   	.domain([min_value_fossil, 0, second_max_value_fossil])
 
-	  const myColor_land = d3.scaleLinear()
+	const myColor_land = d3.scaleLinear()
   	.range(["green", "white", "red"])
   	.domain([min_value_land, 0, second_max_value_land])
 
