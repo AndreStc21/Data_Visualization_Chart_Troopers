@@ -307,7 +307,7 @@ function small_multiples_bar_plot(data, id_div) {
 	
     // Loop over each rank to create a plot for each
     sumstat.forEach((rankData, rank) => {
-		console.log(rank);
+		// console.log(rank);
         const svg = d3.select(id_div)
             .append("svg")
             .attr("width", multiples_width + margin.left + margin.right)
@@ -387,35 +387,47 @@ function small_multiples_bar_plot(data, id_div) {
 
 function heatmap_plot(data, svg_plot, id_div){
 	var max_value_fossil = 0;
-	var min_value_fossil = Infinity;
+	var second_max_value_fossil = 0;
+	var min_value_fossil = 0;
+
 	var max_value_land = 0;
-	var min_value_land = Infinity;
+	var second_max_value_land = 0;
+	var min_value_land = 0;
+
 	data.forEach(d => {
-		if(d.group=="fossil"){
-			if(d.value>max_value_fossil){
+		if (d.group == "fossil") {
+			if (d.value > max_value_fossil) {
+				second_max_value_fossil = max_value_fossil;
 				max_value_fossil = d.value;
+			} else if (d.value > second_max_value_fossil && d.value != max_value_fossil) {
+				second_max_value_fossil = d.value;
 			}
-			if(d.value<min_value_fossil){
+			if (d.value < min_value_fossil) {
 				min_value_fossil = d.value;
 			}
-		}
-		else{
-			if(d.value>max_value_land){
+		} 
+		else {
+			if (d.value > max_value_land) {
+				second_max_value_land = max_value_land;
 				max_value_land = d.value;
+			} else if (d.value > second_max_value_land && d.value != max_value_land) {
+				second_max_value_land = d.value;
 			}
-			if(d.value<min_value_land){
+			if (d.value < min_value_land) {
 				min_value_land = d.value;
 			}
 		}
 	});
+	
+	// console.log(max_value_fossil, second_max_value_fossil);
 
 	const myColor_fossil = d3.scaleLinear()
   	.range(["green", "white", "red"])
-  	.domain([min_value_fossil, 0, max_value_fossil])
+  	.domain([min_value_fossil, 0, second_max_value_fossil])
 
 	  const myColor_land = d3.scaleLinear()
   	.range(["green", "white", "red"])
-  	.domain([min_value_land, 0, max_value_land])
+  	.domain([min_value_land, 0, second_max_value_land])
 
 	const y = d3.scaleBand()
 	.range([ 0, width ])
