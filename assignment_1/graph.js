@@ -410,12 +410,12 @@ function heatmap_plot(data, svg_plot, id_div){
 	});
 
 	const myColor_fossil = d3.scaleLinear()
-  	.range(["green", "red"])
-  	.domain([min_value_fossil, max_value_fossil])
+  	.range(["green", "white", "red"])
+  	.domain([min_value_fossil, 0, max_value_fossil])
 
 	  const myColor_land = d3.scaleLinear()
-  	.range(["green", "red"])
-  	.domain([min_value_land, max_value_land])
+  	.range(["green", "white", "red"])
+  	.domain([min_value_land, 0, max_value_land])
 
 	const y = d3.scaleBand()
 	.range([ 0, width ])
