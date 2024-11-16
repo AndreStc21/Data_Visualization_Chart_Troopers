@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<script src="https://d3js.org/d3.v6.js"></script>
+		<script src="https://d3js.org/d3.v4.js"></script>
+		<script src="sankey.js"></script>
 		<script src="../pages_auxiliaries.js"></script>
 		<style type="text/css">
-			svg.bar {
-				display: inline-block;
+			.node rect {
+			cursor: move;
+			fill-opacity: .9;
+			shape-rendering: crispEdges;
+			}
+
+			.node text {
+			pointer-events: none;
+			text-shadow: 0 1px 0 #fff;
+			}
+
+			.link {
+			fill: none;
+			stroke: #000;
+			stroke-opacity: .2;
+			}
+
+			.link:hover {
+			stroke-opacity: .5;
 			}
 		</style>
 	</head>
@@ -44,5 +62,5 @@
 			<footer id="footer"></footer>
 		</div>
 	</body>
-	<!--<script src="graph.js"></script>-->
+	<script src="graph.js"></script>
 </html>
