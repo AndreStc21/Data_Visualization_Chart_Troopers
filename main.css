@@ -25,6 +25,10 @@ h6 {
 	font-family: "Roboto Slab";
 }
 
+p {
+	text-align: left;
+}
+
 nav {
 	font-size: 22px;
 	margin: 0;
