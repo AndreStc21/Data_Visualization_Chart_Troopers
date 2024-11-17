@@ -39,7 +39,7 @@ const color_map = {
   'Papua New Guinea': '#E83F6F',
 
   'fossil': '#694A38',
-  
+
   'land': '#2C5530',
 }
 
@@ -68,7 +68,8 @@ Promise.all([
   // Process nodes data - create array of node objects
   const nodes = nodesData.map(d => ({
     name: d.node,
-    real_value: d.real_value
+    real_value: d.real_value,
+    indirect_links: new Set(JSON.parse(d.indirect_links))
   }));
 
   // Process links data - convert string indices to numbers
@@ -159,7 +160,7 @@ Promise.all([
     linkedNodes.add(d);
     
     // Highlight connected links and their nodes
-    link.filter(l => l.source === d || l.target === d)
+    link.filter(l => l.source === d || l.target === d || d.indirect_links.has(l.source.index) || d.indirect_links.has(l.target.index))
       .style("stroke-opacity", 0.7)
       .each(l => {
         linkedNodes.add(l.source);
@@ -187,7 +188,7 @@ Promise.all([
     const linkedNodes = new Set();
     
     // Highlight connected links and their nodes
-    link.filter(l => l.source === d.source && l.target === d.target)
+    link.filter(l => (l.source === d.source && l.target === d.target) || (l.source === d.target && nodes[d.source.index].indirect_links.has(l.target.index)) || (l.target === d.source && nodes[d.target.index].indirect_links.has(l.source.index)))
       .style("stroke-opacity", 0.7)
       .each(l => {
         linkedNodes.add(l.source);
