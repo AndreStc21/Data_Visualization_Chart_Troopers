@@ -1,27 +1,27 @@
-,node,real_value
-0,China,12378
-1,India,2864
-2,Indonesia,1647
-3,United States,5199
-4,Mexico,863
-5,Canada,666
-6,Russia,1965
-7,Germany,658
-8,United Kingdom,335
-9,Brazil,1596
-10,Argentina,219
-11,Colombia,137
-12,Democratic Republic of Congo,516
-13,South Africa,405
-14,Egypt,259
-15,Australia,377
-16,New Zealand,35
-17,Papua New Guinea,30
-18,Asia,16890
-19,North America,6728
-20,Europe,2957
-21,South America,1952
-22,Africa,1181
-23,Oceania,442
-24,fossil,25585
-25,land,4567
+,node,real_value,indirect_links
+0,China,12378,[18]
+1,India,2864,[18]
+2,Indonesia,1647,[18]
+3,United States,5199,[19]
+4,Mexico,863,[19]
+5,Canada,666,[19]
+6,Russia,1965,[20]
+7,Germany,658,[20]
+8,United Kingdom,335,[20]
+9,Brazil,1596,[21]
+10,Argentina,219,[21]
+11,Colombia,137,[21]
+12,Democratic Republic of Congo,516,[22]
+13,South Africa,405,[22]
+14,Egypt,259,[22]
+15,Australia,377,[23]
+16,New Zealand,35,[23]
+17,Papua New Guinea,30,[23]
+18,Asia,16890,"[0, 1, 2]"
+19,North America,6728,"[3, 4, 5]"
+20,Europe,2957,"[6, 7, 8]"
+21,South America,1952,"[9, 10, 11]"
+22,Africa,1181,"[12, 13, 14]"
+23,Oceania,442,"[15, 16, 17]"
+24,fossil,25585,[]
+25,land,4567,[]
