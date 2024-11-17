@@ -1,5 +1,5 @@
 // Set up the dimensions and margins
-const margin = { top: 10, right: 20, bottom: 10, left: 20 };
+const margin = { top: 10, right: 100, bottom: 10, left: 100 };
 let width = document.getElementById('plot1').clientWidth - margin.left - margin.right;
 let height = document.getElementById('plot1').clientHeight - margin.top - margin.bottom;
 
@@ -114,11 +114,25 @@ Promise.all([
     .attr("stroke", (d, i) => `url(#gradient-${i})`)
     .attr("stroke-width", d => Math.max(1, d.width))
     .on("mouseover", highlightFlowLink)
-    .on("mouseout", unhighlightFlow);
+    .on("mouseout", unhighlightFlow)
+    .on("mousemove", tooltipMousemove);
+  
+  var tooltip = d3.select("#content-wrap")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "1px")
+  .style("border-radius", "5px")
+  .style("padding", "10px")
+  .style("position", "absolute")
+  .style("left", "0px")
+  .style("top", "0px");
 
-  // Add link titles (tooltips)
-  link.append("title")
-    .text(d => `${d.source.name} → ${d.target.name}\n${format(d.real_value)}`);
+  // // Add link titles (tooltips)
+  // link.append("title")
+  //   .text(d => `${d.source.name} → ${d.target.name}\n${format(d.real_value)}`);
 
   // Add the nodes
   const node = svg.append("g")
@@ -135,7 +149,8 @@ Promise.all([
     .attr("fill", d => color_map[d.name])
     .attr("stroke", "#000")
     .on("mouseover", highlightFlowNode)
-    .on("mouseout", unhighlightFlow);
+    .on("mouseout", unhighlightFlow)
+    .on("mousemove", tooltipMousemove);
 
   // Add titles for the nodes
   node.append("text")
@@ -145,9 +160,9 @@ Promise.all([
     .attr("text-anchor", d => (d.x0 < width / 2) ? "start" : "end")
     .text(d => d.name);
 
-  // Add tooltips for nodes
-  node.append("title")
-    .text(d => `${d.name}\n${format(d.real_value)}`);
+  // // Add tooltips for nodes
+  // node.append("title")
+  //   .text(d => `${d.name}\n${format(d.real_value)}`);
 
   // Function to highlight the flow
   function highlightFlowNode(event, d) {
@@ -170,12 +185,19 @@ Promise.all([
     // Highlight connected nodes
     node.filter(n => linkedNodes.has(n))
       .style("opacity", 1);
+    
+    tooltip.html("Total CO2 emission: " + d.real_value + " " + units).style("opacity", 1);
   }
 
   // Function to remove highlighting
   function unhighlightFlow() {
     link.style("stroke-opacity", 0.2);
     node.style("opacity", 1);
+    tooltip.style("opacity", 0);
+  }
+
+  function tooltipMousemove(event, d) {
+    tooltip.style('left', (event.pageX+20) + 'px').style('top', (event.pageY-100) + 'px');
   }
 
   // Function to highlight the flow
@@ -198,6 +220,12 @@ Promise.all([
     // Highlight connected nodes
     node.filter(n => linkedNodes.has(n))
       .style("opacity", 1);
+    if(d.target.name==="fossil"||d.target.name==="land"){
+      tooltip.html(d.source.name + " CO2 " + d.target.name+ " emission: " + d.real_value + " " + units).style("opacity", 1);
+    }
+    if(d.source.name==="fossil"||d.source.name==="land"){
+      tooltip.html(d.target.name + " CO2 " + d.source.name+ " emission: " + d.real_value + " " + units).style("opacity", 1);
+    }
   }
 
 }).catch(error => {
