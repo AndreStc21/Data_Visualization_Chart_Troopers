@@ -7,7 +7,41 @@ let height = document.getElementById('plot1').clientHeight - margin.top - margin
 const units = "millions tonnes";
 const formatNumber = d3.format(",.0f");
 const format = d => `${formatNumber(d)} ${units}`;
-const color = d3.scaleOrdinal(d3.schemeCategory10);
+const color_map = {
+  'Asia': '#FFA630',
+  'China': '#FFA630',
+  'India': '#FFA630',
+  'Indonesia': '#FFA630',
+
+  'North America': '#D7E8BA',
+  'United States': '#D7E8BA',
+  'Mexico': '#D7E8BA',
+  'Canada': '#D7E8BA',
+
+  'Europe': '#4DA1A9',
+  'Russia': '#4DA1A9',
+  'Germany': '#4DA1A9',
+  'United Kingdom': '#4DA1A9',
+
+  'South America': '#2E5077',
+  'Brazil': '#2E5077',
+  'Argentina': '#2E5077',
+  'Colombia': '#2E5077',
+
+  'Africa': '#CEABB1',
+  'Democratic Republic of Congo': '#CEABB1',
+  'South Africa': '#CEABB1',
+  'Egypt': '#CEABB1',
+
+  'Oceania': '#E83F6F',
+  'Australia': '#E83F6F',
+  'New Zealand': '#E83F6F',
+  'Papua New Guinea': '#E83F6F',
+
+  'fossil': '#694A38',
+  
+  'land': '#2C5530',
+}
 
 // Create the SVG container
 const svg = d3.select("#plot1")
@@ -62,11 +96,11 @@ Promise.all([
 
     gradient.append("stop")
       .attr("offset", "0%")
-      .attr("stop-color", color(link.source.name));
+      .attr("stop-color", color_map[link.source.name]);
 
     gradient.append("stop")
       .attr("offset", "100%")
-      .attr("stop-color", color(link.target.name));
+      .attr("stop-color", color_map[link.target.name]);
   });
 
   // Add the links
@@ -97,7 +131,7 @@ Promise.all([
   node.append("rect")
     .attr("height", d => d.y1 - d.y0)
     .attr("width", d => d.x1 - d.x0)
-    .attr("fill", d => color(d.name))
+    .attr("fill", d => color_map[d.name])
     .attr("stroke", "#000")
     .on("mouseover", highlightFlowNode)
     .on("mouseout", unhighlightFlow);
