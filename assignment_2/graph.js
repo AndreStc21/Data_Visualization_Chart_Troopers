@@ -1,132 +1,157 @@
-var units = "tonnes";
+// Set up the dimensions and margins
+const margin = { top: 10, right: 100, bottom: 10, left: 100 };
+let width = document.getElementById('plot1').clientWidth - margin.left - margin.right;
+let height = document.getElementById('plot1').clientHeight - margin.top - margin.bottom;
 
-// set the dimensions and margins of the graph
-const margin = {top: 30, right: 30, bottom: 100, left: 100},
-width = 550 - margin.left - margin.right,
-height = 550 - margin.top - margin.bottom;
+// Format variables
+const units = "tonnes";
+const formatNumber = d3.format(",.0f");
+const format = d => `${formatNumber(d)} ${units}`;
+const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-// format variables
-var formatNumber = d3.format(",.0f"),    // zero decimal places
-    format = function(d) { return formatNumber(d) + " " + units; },
-    color = d3.scaleOrdinal(d3.schemeCategory10);
-
-// append the svg object to the body of the page
-var svg = d3.select("#plot1").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+// Create the SVG container
+const svg = d3.select("#plot1")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
   .append("g")
-    .attr("transform", 
-          "translate(" + margin.left + "," + margin.top + ")");
+  .attr("transform", `translate(${margin.left},${margin.top})`);
 
-// Set the sankey diagram properties
-var sankey = d3.sankey()
-    .nodeWidth(36)
-    .nodePadding(40)
-    .size([width, height]);
+// Create gradient definitions
+const defs = svg.append("defs");
 
-var path = sankey.link();
+// Set up the sankey generator
+const sankey = d3.sankey()
+  .nodeWidth(36)
+  .nodePadding(20)
+  .extent([[0, 0], [width, height]]);
 
-// load the data
-d3.csv("links.csv", function(error, data) {
- 
-  //set up graph in same style as original example but empty
-  graph = {"nodes" : [], "links" : []};
+// Load and process the data
+Promise.all([
+  d3.csv('nodes.csv'),
+  d3.csv('links.csv')
+]).then(([nodesData, linksData]) => {
+  // Process nodes data - create array of node objects
+  const nodes = nodesData.map(d => ({
+    name: d.node
+  }));
 
-  data.forEach(function (d) {
-    graph.nodes.push({ "name": d.source });
-    graph.nodes.push({ "name": d.target });
-    graph.links.push({ "source": d.source,
-                       "target": d.target,
-                       "value": +d.value });
-   });
+  // Process links data - convert string indices to numbers
+  const links = linksData.map(d => ({
+    source: parseInt(d.source),
+    target: parseInt(d.target),
+    value: parseFloat(d.value)
+  }));
 
-  // return only the distinct / unique nodes
-  graph.nodes = d3.keys(d3.nest()
-    .key(function (d) { return d.name; })
-    .object(graph.nodes));
-
-  // loop through each link replacing the text with its index from node
-  graph.links.forEach(function (d, i) {
-    graph.links[i].source = graph.nodes.indexOf(graph.links[i].source);
-    graph.links[i].target = graph.nodes.indexOf(graph.links[i].target);
+  // Generate the sankey diagram
+  const { nodes: sankeyNodes, links: sankeyLinks } = sankey({
+    nodes: nodes,
+    links: links
   });
 
-  // now loop through each nodes to make nodes an array of objects
-  // rather than an array of strings
-  graph.nodes.forEach(function (d, i) {
-    graph.nodes[i] = { "name": d };
+  // Create gradients for each link
+  sankeyLinks.forEach((link, i) => {
+    const gradientId = `gradient-${i}`;
+    const gradient = defs.append("linearGradient")
+      .attr("id", gradientId)
+      .attr("gradientUnits", "userSpaceOnUse")
+      .attr("x1", link.source.x1)
+      .attr("x2", link.target.x0);
+
+    gradient.append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", color(link.source.name));
+
+    gradient.append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", color(link.target.name));
   });
 
-  sankey
-      .nodes(graph.nodes)
-      .links(graph.links)
-      .layout(32);
+  // Add the links
+  const link = svg.append("g")
+    .selectAll(".link")
+    .data(sankeyLinks)
+    .join("path")
+    .attr("class", "link")
+    .attr("d", d3.sankeyLinkHorizontal())
+    .attr("stroke", (d, i) => `url(#gradient-${i})`)
+    .attr("stroke-width", d => Math.max(1, d.width));
 
-  // add in the links
-  var link = svg.append("g").selectAll(".link")
-      .data(graph.links)
-    .enter().append("path")
-      .attr("class", "link")
-      .attr("d", path)
-      .style("stroke-width", function(d) { return Math.max(1, d.dy); })
-      .sort(function(a, b) { return b.dy - a.dy; });
-
-  // add the link titles
+  // Add link titles (tooltips)
   link.append("title")
-        .text(function(d) {
-    		return d.source.name + " - " + 
-                d.target.name + "\n" + format(d.value); });
+    .text(d => `${d.source.name} → ${d.target.name}\n${format(d.value)}`);
 
-  // add in the nodes
-  var node = svg.append("g").selectAll(".node")
-      .data(graph.nodes)
-    .enter().append("g")
-      .attr("class", "node")
-      .attr("transform", function(d) { 
-		  return "translate(" + d.x + "," + d.y + ")"; })
-      .call(d3.drag()
-        .subject(function(d) {
-          return d;
-        })
-        .on("start", function() {
-          this.parentNode.appendChild(this);
-        })
-        .on("drag", dragmove));
+  // Add the nodes
+  const node = svg.append("g")
+    .selectAll(".node")
+    .data(sankeyNodes)
+    .join("g")
+    .attr("class", "node")
+    .attr("transform", d => `translate(${d.x0},${d.y0})`);
 
-  // add the rectangles for the nodes
+  // Add rectangles for the nodes
   node.append("rect")
-      .attr("height", function(d) { return d.dy; })
-      .attr("width", sankey.nodeWidth())
-      .style("fill", function(d) { 
-		  return d.color = color(d.name.replace(/ .*/, "")); })
-      .style("stroke", function(d) { 
-		  return d3.rgb(d.color).darker(2); })
-    .append("title")
-      .text(function(d) { 
-		  return d.name + "\n" + format(d.value); });
+    .attr("height", d => d.y1 - d.y0)
+    .attr("width", d => d.x1 - d.x0)
+    .attr("fill", d => color(d.name))
+    .attr("stroke", "#000")
+    .on("mouseover", highlightFlow)
+    .on("mouseout", unhighlightFlow);
 
-  // add in the title for the nodes
+  // Add titles for the nodes
   node.append("text")
-      .attr("x", -6)
-      .attr("y", function(d) { return d.dy / 2; })
-      .attr("dy", ".35em")
-      .attr("text-anchor", "end")
-      .attr("transform", null)
-      .text(function(d) { return d.name; })
-    .filter(function(d) { return d.x < width / 2; })
-      .attr("x", 6 + sankey.nodeWidth())
-      .attr("text-anchor", "start");
+    .attr("x", d => (d.x0 < width / 2) ? 6 + (d.x1 - d.x0) : -6)
+    .attr("y", d => (d.y1 - d.y0) / 2)
+    .attr("dy", "0.35em")
+    .attr("text-anchor", d => (d.x0 < width / 2) ? "start" : "end")
+    .text(d => d.name);
 
-  // the function for moving the nodes
-  function dragmove(d) {
-    d3.select(this)
-      .attr("transform", 
-            "translate(" 
-               + d.x + "," 
-               + (d.y = Math.max(
-                  0, Math.min(height - d.dy, d3.event.y))
-                 ) + ")");
-    sankey.relayout();
-    link.attr("d", path);
+  // Add tooltips for nodes
+  node.append("title")
+    .text(d => `${d.name}\n${format(d.value)}`);
+
+  // Function to highlight the flow
+  function highlightFlow(event, d) {
+    // Reduce opacity of all links and nodes
+    link.style("stroke-opacity", 0.1);
+    node.style("opacity", 0.1);
+    
+    // Get all connected links
+    const linkedNodes = new Set();
+    linkedNodes.add(d);
+    
+    // Highlight connected links and their nodes
+    link.filter(l => l.source === d || l.target === d)
+      .style("stroke-opacity", 0.7)
+      .each(l => {
+        linkedNodes.add(l.source);
+        linkedNodes.add(l.target);
+      });
+    
+    // Highlight connected nodes
+    node.filter(n => linkedNodes.has(n))
+      .style("opacity", 1);
   }
+
+  // Function to remove highlighting
+  function unhighlightFlow() {
+    link.style("stroke-opacity", 0.2);
+    node.style("opacity", 1);
+  }
+}).catch(error => {
+  console.error('Error loading the data:', error);
 });
+
+// Make it responsive
+function resize() {
+  width = document.getElementById('plot1').clientWidth - margin.left - margin.right;
+  height = document.getElementById('plot1').clientHeight - margin.top - margin.bottom;
+  
+  d3.select("#plot1 svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
+    
+  sankey.extent([[0, 0], [width, height]]);
+}
+
+window.addEventListener("resize", resize);

@@ -1,66 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<script src="https://d3js.org/d3.v4.js"></script>
-		<script src="sankey.js"></script>
-		<script src="../pages_auxiliaries.js"></script>
-		<style type="text/css">
-			.node rect {
-			cursor: move;
-			fill-opacity: .9;
-			shape-rendering: crispEdges;
-			}
-
-			.node text {
-			pointer-events: none;
-			text-shadow: 0 1px 0 #fff;
-			}
-
-			.link {
-			fill: none;
-			stroke: #000;
-			stroke-opacity: .2;
-			}
-
-			.link:hover {
-			stroke-opacity: .5;
-			}
-		</style>
-	</head>
-
-	<body>
-		<div id="page-container">
-			<div id="content-wrap">
-				<div>
-					<div>
-						<h1 class="center">CO2 emissions flow analysis</h1>
-					</div>
-					<div>
-						<h3 class="center">
-							Comparing the emission flows of countries and their respective regions
-						</h3>
-					</div>
-				</div>
-
-				<div id="all-graph-container">
-					<div class="graph-container">
-						<div id="plot1"></div>
-						<div class="description">
-							<h3 class="graph-titles">2022 per capita CO2 emissions</h3>
-							<p>Per capita emissions can be misleading indicators, as in our case, especially when countries have very small, 
-								wealthy populations that skew the overall assessment.
-								<br>However, it remains an important metric because it highlights that the wealthiest individuals 
-								often pollute significantly more than the average person.
-								<br>This metric shifts the focus from identifying the most polluting countries 
-								to pinpointing the individuals and groups with the highest environmental impact.
-								</p>
-						</div>
-					</div>
-				</div>
-				
-			</div>
-			<footer id="footer"></footer>
-		</div>
-	</body>
-	<script src="graph.js"></script>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO2 Emissions Flow Analysis</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+	<script src="../pages_auxiliaries.js"></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="page-container">
+      <div id="content-wrap">
+        <div>
+          <h1 class="center">CO2 Emissions Flow Analysis</h1>
+          <h3 class="center">Comparing the emission flows of countries and their respective regions</h3>
+        </div>
+        <div id="all-graph-container">
+          <div class="large-graph-container">
+            <div id="plot1"></div>
+          </div>
+        </div>
+      </div>
+      <footer id="footer">
+        <div id="footer-container">
+          <div id="footer-left">
+            <span>Data visualization of CO2 emissions</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+  </body>
+  <script src="graph.js"></script>
 </html>
