@@ -1,10 +1,10 @@
 // Set up the dimensions and margins
-const margin = { top: 10, right: 100, bottom: 10, left: 100 };
+const margin = { top: 10, right: 20, bottom: 10, left: 20 };
 let width = document.getElementById('plot1').clientWidth - margin.left - margin.right;
 let height = document.getElementById('plot1').clientHeight - margin.top - margin.bottom;
 
 // Format variables
-const units = "tonnes";
+const units = "millions tonnes";
 const formatNumber = d3.format(",.0f");
 const format = d => `${formatNumber(d)} ${units}`;
 const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -33,14 +33,16 @@ Promise.all([
 ]).then(([nodesData, linksData]) => {
   // Process nodes data - create array of node objects
   const nodes = nodesData.map(d => ({
-    name: d.node
+    name: d.node,
+    real_value: d.real_value
   }));
 
   // Process links data - convert string indices to numbers
   const links = linksData.map(d => ({
     source: parseInt(d.source),
     target: parseInt(d.target),
-    value: parseFloat(d.value)
+    value: parseFloat(d.value),
+    real_value: parseFloat(d.real_value)
   }));
 
   // Generate the sankey diagram
@@ -75,11 +77,13 @@ Promise.all([
     .attr("class", "link")
     .attr("d", d3.sankeyLinkHorizontal())
     .attr("stroke", (d, i) => `url(#gradient-${i})`)
-    .attr("stroke-width", d => Math.max(1, d.width));
+    .attr("stroke-width", d => Math.max(1, d.width))
+    .on("mouseover", highlightFlowLink)
+    .on("mouseout", unhighlightFlow);
 
   // Add link titles (tooltips)
   link.append("title")
-    .text(d => `${d.source.name} → ${d.target.name}\n${format(d.value)}`);
+    .text(d => `${d.source.name} → ${d.target.name}\n${format(d.real_value)}`);
 
   // Add the nodes
   const node = svg.append("g")
@@ -95,7 +99,7 @@ Promise.all([
     .attr("width", d => d.x1 - d.x0)
     .attr("fill", d => color(d.name))
     .attr("stroke", "#000")
-    .on("mouseover", highlightFlow)
+    .on("mouseover", highlightFlowNode)
     .on("mouseout", unhighlightFlow);
 
   // Add titles for the nodes
@@ -108,10 +112,10 @@ Promise.all([
 
   // Add tooltips for nodes
   node.append("title")
-    .text(d => `${d.name}\n${format(d.value)}`);
+    .text(d => `${d.name}\n${format(d.real_value)}`);
 
   // Function to highlight the flow
-  function highlightFlow(event, d) {
+  function highlightFlowNode(event, d) {
     // Reduce opacity of all links and nodes
     link.style("stroke-opacity", 0.1);
     node.style("opacity", 0.1);
@@ -138,6 +142,29 @@ Promise.all([
     link.style("stroke-opacity", 0.2);
     node.style("opacity", 1);
   }
+
+  // Function to highlight the flow
+  function highlightFlowLink(event, d) {
+    // Reduce opacity of all links and nodes
+    link.style("stroke-opacity", 0.1);
+    node.style("opacity", 0.1);
+    
+    // Get all connected links
+    const linkedNodes = new Set();
+    
+    // Highlight connected links and their nodes
+    link.filter(l => l.source === d.source && l.target === d.target)
+      .style("stroke-opacity", 0.7)
+      .each(l => {
+        linkedNodes.add(l.source);
+        linkedNodes.add(l.target);
+      });
+    
+    // Highlight connected nodes
+    node.filter(n => linkedNodes.has(n))
+      .style("opacity", 1);
+  }
+
 }).catch(error => {
   console.error('Error loading the data:', error);
 });

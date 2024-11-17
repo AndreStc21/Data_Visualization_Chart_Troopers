@@ -1,27 +1,27 @@
-,node
-0,China
-1,India
-2,Indonesia
-3,United States
-4,Mexico
-5,Canada
-6,Russia
-7,Germany
-8,United Kingdom
-9,Brazil
-10,Argentina
-11,Colombia
-12,Democratic Republic of Congo
-13,South Africa
-14,Egypt
-15,Australia
-16,New Zealand
-17,Papua New Guinea
-18,Asia
-19,North America
-20,Europe
-21,South America
-22,Africa
-23,Oceania
-24,fossil
-25,land
+,node,real_value
+0,China,12378
+1,India,2864
+2,Indonesia,1647
+3,United States,5199
+4,Mexico,863
+5,Canada,666
+6,Russia,1965
+7,Germany,658
+8,United Kingdom,335
+9,Brazil,1596
+10,Argentina,219
+11,Colombia,137
+12,Democratic Republic of Congo,516
+13,South Africa,405
+14,Egypt,259
+15,Australia,377
+16,New Zealand,35
+17,Papua New Guinea,30
+18,Asia,16890
+19,North America,6728
+20,Europe,2957
+21,South America,1952
+22,Africa,1181
+23,Oceania,442
+24,fossil,25585
+25,land,4567
