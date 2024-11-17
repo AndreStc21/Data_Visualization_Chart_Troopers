@@ -1,30 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CO2 Emissions Flow Analysis</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
-	<script src="../pages_auxiliaries.js"></script>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <div id="page-container">
-      <div id="content-wrap">
-        <div>
-          <h1 class="center">CO2 Emissions Flow Analysis</h1>
-          <h3 class="center">Comparing the emission flows of countries and their respective regions</h3>
-        </div>
-        <div id="all-graph-container">
-          <div class="large-graph-container">
-            <div id="plot1"></div>
-          </div>
-        </div>
-      </div>
-      <footer id="footer"></footer>
-    </div>
-    
-  </body>
-  <script src="graph.js"></script>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CO2 Emissions Flow Analysis</title>
+		<script src="https://d3js.org/d3.v7.min.js"></script>
+		<script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+		<script src="../pages_auxiliaries.js"></script>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div id="page-container">
+			<div id="content-wrap">
+				<div>
+					<h1 class="center">CO2 Emissions Flow Analysis</h1>
+					<h3 class="center">
+						Comparing the emission flows of countries and their
+						respective regions
+					</h3>
+				</div>
+				<div id="all-graph-container">
+					<div class="large-graph-container">
+						<div id="plot1"></div>
+						<div class="large-description">
+							<h3 class="graph-titles">
+								Top 5 - 2022 total CO2 emissions
+							</h3>
+							<p>
+								Going from left to right we have the five most
+								polluting countries for each continent, while
+								the last plot represents the summation of the
+								emissions of all the other countries in the
+								continent.<br />
+								<br />Although Asian countries have large
+								populations, they still exhibit some of the
+								highest CO2 emission, meaning that they pollute
+								the world a lot. <br />We can now notice better
+								that China's emissions are more than double USA'
+								ones.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer id="footer"></footer>
+		</div>
+	</body>
+	<script src="graph.js"></script>
 </html>
