@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CO2 Emissions Flow Analysis</title>
+		<script src="https://d3js.org/d3.v6.js"></script>
+		<script src="../pages_auxiliaries.js"></script>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div id="page-container">
+			<div id="content-wrap">
+				<div>
+					<h1 class="center">CO2 Emissions Map</h1>
+					<h3 class="center">
+						Comparing the emission flows of countries and their
+						respective regions
+					</h3>
+				</div>
+				<div id="all-graph-container">
+					<div class="graph-container">
+						<div id="plot1"></div>
+						<div class="description">
+							<h3 class="graph-titles">
+								Top 3 per region - 2022 CO2 emissions flow
+							</h3>
+							<p>
+								Richer and more populous countries tend to have
+								higher emissions, both from fossil fuels and
+								land use.
+								<br />As expected, China, India, and the USA are
+								the largest polluters, followed by Russia,
+								Indonesia, Brazil, and Germany. <br />
+								<br />Interestingly, while land-use emissions
+								are typically higher in wealthier nations, they
+								are also significant in Brazil and the
+								Democratic Republic of Congo, likely due to
+								deforestation in areas like the Amazon
+								rainforest.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer id="footer"></footer>
+		</div>
+	</body>
+	<script src="graph.js"></script>
+</html>
