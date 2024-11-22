@@ -8,7 +8,7 @@ const units = "millions tonnes";
 const formatNumber = d3.format(",.0f");
 const format = d => `${formatNumber(d)} ${units}`;
 
-// Create the SVG container
+// Create the SVG container for first plot
 const svg_plot1 = d3.select("#plot1")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -16,8 +16,17 @@ const svg_plot1 = d3.select("#plot1")
   .append("g")
   .attr("transform", `translate(${margin.left},${margin.top})`);
 
+// Create the SVG container for second plot
+const svg_plot2 = d3.select("#plot2")
+.append("svg")
+.attr("width", width + margin.left + margin.right)
+.attr("height", height + margin.top + margin.bottom)
+.append("g")
+.attr("transform", `translate(${margin.left},${margin.top})`);
+
 // Map and projection
 const path = d3.geoPath();
+
 const projection = d3.geoMercator()
   .scale(100)
   .center([0, 0])
@@ -25,9 +34,6 @@ const projection = d3.geoMercator()
 
 // Data and color scale
 const data = new Map();
-const colorScale = d3.scaleThreshold()
-  .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
-  .range(d3.schemeBlues[7]);
 
 var tooltip = d3.select("#content-wrap")
 .append("div")
@@ -50,6 +56,13 @@ d3.csv("co2-total-country-emissions.csv", function(d) {
 })]).then(function(loadData){
     let topo = loadData[0]
 
+    minVal = d3.min(data.values())
+    maxVal = d3.max(data.values())
+
+    const colorScale = d3.scaleThreshold()
+    .domain([minVal, minVal + (maxVal - minVal) / 6, minVal + 2 * (maxVal - minVal) / 6, minVal + 3 * (maxVal - minVal) / 6, minVal + 4 * (maxVal - minVal) / 6, minVal + 5 * (maxVal - minVal) / 6, maxVal])
+    .range(d3.schemeReds[7]);
+
     let mouseOver = function(d) {
     d3.selectAll(".Country")
       .transition()
@@ -59,7 +72,7 @@ d3.csv("co2-total-country-emissions.csv", function(d) {
       .transition()
       .duration(200)
       .style("opacity", 1)
-    tooltip.html("Total CO2 emission: " + d.currentTarget.__data__.total + " " + units).style("opacity", 1);
+    tooltip.html("Country: " + d.currentTarget.__data__.properties.name + "<br>Total CO2 emission: " + d.currentTarget.__data__.total + " " + units).style("opacity", 1);
   }
 
   let mouseMove = function tooltipMousemove(event, d) {
@@ -99,5 +112,4 @@ d3.csv("co2-total-country-emissions.csv", function(d) {
       .on("mouseover", mouseOver )
       .on("mouseleave", mouseLeave )
       .on("mousemove", mouseMove)
-
 })
