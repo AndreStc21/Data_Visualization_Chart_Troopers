@@ -28,42 +28,41 @@ const svg_plot2 = d3
 	.append("g")
 	.attr("transform", `translate(${margin.left},${margin.top})`);
 
-// Map and projection
-const path = d3.geoPath();
+function map_plot(data, topo, svg_plot, id_div, proj){
+  // Map and projection
+  const path = d3.geoPath();
+  let projection = NaN
+  if(proj==="orthographic"){
+    projection = d3
+    .geoOrthographic()
+    .scale(200)
+    .center([0, 0])
+    .translate([width / 2, height / 2]);
+  }
+  else{
+    projection = d3
+    .geoMercator()
+    .scale(100)
+    .center([0, 0])
+    .translate([width / 2, height / 2]);
+  }
 
-const projection = d3
-	.geoMercator()
-	.scale(100)
-	.center([0, 0])
-	.translate([width / 2, height / 2]);
 
-// Data and color scale
-const data = new Map();
+  var tooltip = d3
+  .select("#content-wrap")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "1px")
+  .style("border-radius", "5px")
+  .style("padding", "10px")
+  .style("position", "absolute")
+  .style("left", "0px")
+  .style("top", "0px");
 
-var tooltip = d3
-	.select("#content-wrap")
-	.append("div")
-	.style("opacity", 0)
-	.attr("class", "tooltip")
-	.style("background-color", "white")
-	.style("border", "solid")
-	.style("border-width", "1px")
-	.style("border-radius", "5px")
-	.style("padding", "10px")
-	.style("position", "absolute")
-	.style("left", "0px")
-	.style("top", "0px");
-
-// Load external data and boot
-Promise.all([
-	d3.json("world.geojson"),
-	d3.csv("co2-total-country-emissions.csv", function (d) {
-		data.set(d.Code, +d.Emissions);
-	}),
-]).then(function (loadData) {
-	let topo = loadData[0];
-
-	minVal = d3.min(data.values());
+  minVal = d3.min(data.values());
 	maxVal = d3.max(data.values());
 
 	const numThresholds = 8;
@@ -80,11 +79,11 @@ Promise.all([
 		.range(d3.schemeReds[7]);
 
 	let mouseOver = function (d) {
-		d3.selectAll(".Country")
+		d3.selectAll(".Country "+id_div)
 			.transition()
 			.duration(200)
-			.style("opacity", 0.5);
-		d3.select(this).transition().duration(200).style("opacity", 1);
+			.style("opacity", 0.5).style("stroke", "transparent");
+		d3.select(this).transition().duration(200).style("opacity", 1).style("stroke", "black");
 		tooltip
 			.html(
 				"Country: " +
@@ -104,7 +103,7 @@ Promise.all([
 	};
 
 	let mouseLeave = function (d) {
-		d3.selectAll(".Country").transition().duration(200).style("opacity", 1);
+		d3.selectAll(".Country "+id_div).transition().duration(200).style("opacity", 1).style("stroke", "transparent");
 		d3.select(this)
 			.transition()
 			.duration(200)
@@ -113,7 +112,7 @@ Promise.all([
 	};
 
 	// Draw the map
-	svg_plot1
+	svg_plot
 		.append("g")
 		.selectAll("path")
 		.data(topo.features)
@@ -128,10 +127,25 @@ Promise.all([
 		})
 		.style("stroke", "transparent")
 		.attr("class", function (d) {
-			return "Country";
+			return "Country "+id_div;
 		})
 		.style("opacity", 1)
 		.on("mouseover", mouseOver)
 		.on("mouseleave", mouseLeave)
 		.on("mousemove", mouseMove);
+}
+
+
+// Data and color scale
+var data = new Map();
+// Load external data and boot
+Promise.all([
+	d3.json("world.geojson"),
+	d3.csv("co2-total-country-emissions.csv", function (d) {
+		data.set(d.Code, +d.Emissions);
+	}),
+]).then(function (loadData) {
+	let topo = loadData[0];
+  map_plot(data, topo, svg_plot1, 'plot_1', 'mercator');
+  map_plot(data, topo, svg_plot2, 'plot_2', 'orthographic');
 });
