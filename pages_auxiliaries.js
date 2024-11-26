@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		</div>
 		<div id="title">
 			<h1 style="cursor: pointer;">
-			<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none; color: inherit;">Data Visualization Website</a>
+			<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none; color: inherit;">CO2 Global Emissions Visual Analysis</a>
 			</h1>
 		</div>
 		<div id="dropdown-menu" class="dropdown-menu">
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		navbar.innerHTML = `
 							<h1 id="title" style="cursor: pointer;">
 							<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none; color: inherit;">
-								Data Visualization Website
+								CO2 Global Emissions Visual Analysis
 							</a>
 							</h1>`;
 	}
