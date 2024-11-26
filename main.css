@@ -12,6 +12,7 @@ body {
 	padding-bottom: 3rem;
 }
 
+/*
 .section {
 	display: flex;
 	flex-direction: column;
@@ -19,6 +20,7 @@ body {
 	margin-left: 8rem;
 	margin-top: 4rem;
 }
+*/
 
 .center {
 	text-align: center;
@@ -31,13 +33,14 @@ h4,
 h5,
 h6 {
 	font-family: "Roboto Slab";
-	margin: 0.2rem
+	/*margin: 0.2rem;*/
 }
 
 p {
 	text-align: left;
 }
 
+/*
 nav {
 	font-size: 22px;
 	margin: 0;
@@ -48,13 +51,43 @@ nav {
 	color: whitesmoke;
 	height: 6.5rem;
 }
+*/
 
-#dropdown-menu {
+#topnav {
+	display: block;
+	overflow: hidden;
+	color: whitesmoke;
+	background-color: #2e68c0;
+	position: relative;
+}
+
+#topnav #dropdown-menu {
 	display: none;
 }
 
-#title {
-	margin: 0;
+#topnav #title {
+	font-size: 22px;
+	padding-top: 14px;
+	padding-bottom: 14px;
+}
+
+#topnav a {
+	width: fit-content;
+	color: whitesmoke;
+	padding-left: 35px;
+	text-decoration: none;
+	display: block;
+}
+
+#topnav .links {
+	padding-bottom: 28px;
+}
+
+#topnav a.icon {
+	padding: 0px;
+	position: absolute;
+	right: 55px;
+	top: 55px;
 }
 
 #all-graph-container {
