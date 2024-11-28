@@ -630,48 +630,11 @@ function heatmap_plot(data, svg_plot, id_div) {
 
 	svg_plot
 		.append("text")
-		.attr("x", legendX + legendWidth / 2) // Centrare il testo sopra la legenda
-		.attr("y", legendY - 10) // Posizionare il testo sopra la legenda
-		.attr("text-anchor", "middle") // Allineare il testo al centro
-		.style("font-size", "12px") // Imposta la dimensione del carattere
-		.text(legendText); // Imposta il testo da visualizzare
-
-	/*
-
-	// Trying to add a gradient colormap legend to the heatmap
-	// Append a defs (for definition) element to your SVG
-
-	var defs = svg.append("defs");
-
-	//Append a linearGradient element to the defs and give it a unique id
-	var linearGradient = defs
-		.append("linearGradient")
-		.attr("id", "linear-gradient");
-
-	//Horizontal gradient
-	linearGradient
-		.attr("x1", "0%")
-		.attr("y1", "0%")
-		.attr("x2", "100%")
-		.attr("y2", "0%");
-
-	linearGradient
-		.selectAll("stop")
-		.data([
-			{ offset: "0%", color: "#2c7bb6" },
-			{ offset: "50%", color: "#00a6ca" },
-			{ offset: "100%", color: "#d7191c" },
-		])
-		.enter()
-		.append("stop")
-		.attr("offset", function (d) {
-			return d.offset;
-		})
-		.attr("stop-color", function (d) {
-			return d.color;
-		});
-
-	*/
+		.attr("x", legendX + legendWidth / 2)
+		.attr("y", legendY - 10)
+		.attr("text-anchor", "middle")
+		.style("font-size", "12px")
+		.text(legendText);
 
 	var mouseover = function (event, d) {
 		d3.selectAll(id_div + "  rect").style("opacity", 0.2);
