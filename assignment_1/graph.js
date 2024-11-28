@@ -482,11 +482,11 @@ function small_multiples_bar_plot(data, id_div) {
 function heatmap_plot(data, svg_plot, id_div) {
 	var max_value_fossil = 0;
 	var second_max_value_fossil = 0;
-	var min_value_fossil = 0;
+	var min_value_fossil = Infinity;
 
 	var max_value_land = 0;
 	var second_max_value_land = 0;
-	var min_value_land = 0;
+	var min_value_land = Infinity;
 
 	data.forEach((d) => {
 		if (d.group == "fossil") {
