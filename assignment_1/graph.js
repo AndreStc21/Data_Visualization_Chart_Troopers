@@ -65,7 +65,7 @@ function bar_plot(data, svg_plot, id_div){
 
 	svg_plot.append("g")
 	.attr("transform", `translate(0, ${height})`)
-	.call(d3.axisBottom(x))
+	.call(d3.axisBottom(x).tickSizeOuter([0]))
 	.selectAll("text")
 	.attr("transform", "translate(-10,0)rotate(-45)")
 	.style("text-anchor", "end")
@@ -77,7 +77,7 @@ function bar_plot(data, svg_plot, id_div){
 	.range([ height, 0]);
 
 	svg_plot.append("g")
-	.call(d3.axisLeft(y));
+	.call(d3.axisLeft(y).tickSizeOuter([0]));
 
 	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "CO2 emissions per capita (tonnes)");
 
@@ -174,7 +174,7 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	
 	svg_plot.append("g")
 	.attr("transform", `translate(0, ${height})`)
-	.call(d3.axisBottom(x))
+	.call(d3.axisBottom(x).tickSizeOuter([0]))
 	.selectAll("text")
 	.attr("transform", "translate(-10,0)rotate(-45)")
 	.style("text-anchor", "end");
@@ -189,7 +189,7 @@ function stacked_bar_plot(data, svg_plot, id_div, normalized){
 	.padding(0.2);
 
 	svg_plot.append("g")
-	.call(d3.axisLeft(y));
+	.call(d3.axisLeft(y).tickSizeOuter([0]));
 
 	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "Region");
 
@@ -357,7 +357,7 @@ function small_multiples_bar_plot(data, id_div) {
         // X and Y axes
         svg.append("g")
             .attr("transform", `translate(0, ${height})`)
-            .call(d3.axisBottom(x).ticks(1));
+            .call(d3.axisBottom(x).ticks(1).tickSizeOuter([0]));
 
         svg.append("g")
             .call(d3.axisLeft(y).tickSize(0).tickPadding(6))
@@ -439,7 +439,7 @@ function heatmap_plot(data, svg_plot, id_div){
 
 	svg_plot.append("g")
 	.attr("transform", `translate(0, ${height})`)
-	.call(d3.axisBottom(x))
+	.call(d3.axisBottom(x).tickSizeOuter([0]))
 	.selectAll("text")
 	.attr("transform", "translate(-10,0)rotate(-45)")
 	.style("text-anchor", "end");
@@ -447,7 +447,7 @@ function heatmap_plot(data, svg_plot, id_div){
 	add_axis_label(svg_plot, width / 2, height + margin.bottom - 5, "", "middle", "Country");
 
 	svg_plot.append("g")
-	.call(d3.axisLeft(y));
+	.call(d3.axisLeft(y).tickSizeOuter([0]));
 
 	add_axis_label(svg_plot, -height / 2, -margin.left + 15, "rotate(-90)", "middle", "Emission Type");
 
@@ -463,6 +463,31 @@ function heatmap_plot(data, svg_plot, id_div){
 	.style("position", "absolute")
 	.style("left", "0px")
 	.style("top", "0px");
+
+	//Trying to add a gradient colormap legend to the heatmap
+	//Append a defs (for definition) element to your SVG
+	/*var defs = svg.append("defs");
+
+	//Append a linearGradient element to the defs and give it a unique id
+	var linearGradient = defs.append("linearGradient")
+		.attr("id", "linear-gradient");
+
+	//Horizontal gradient
+	linearGradient
+	.attr("x1", "0%")
+	.attr("y1", "0%")
+	.attr("x2", "100%")
+	.attr("y2", "0%");
+
+	linearGradient.selectAll("stop")
+    .data([
+        {offset: "0%", color: "#2c7bb6"},
+        {offset: "50%", color: "#00a6ca"},
+        {offset: "100%", color: "#d7191c"}
+      ])
+    .enter().append("stop")
+    .attr("offset", function(d) { return d.offset; })
+    .attr("stop-color", function(d) { return d.color; });*/
 
 	var mouseover = function(event, d) {
 		d3.selectAll(id_div+"  rect").style("opacity", 0.2);

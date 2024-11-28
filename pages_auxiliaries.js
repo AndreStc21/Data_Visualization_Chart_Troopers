@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			</a>
 		</div>
 		<div id="title">
-			<h1>
+			<h1 class = "center">
 				<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers">CO2 Global Emissions Visual Analysis</a>
 			</h1>
 		</div>
@@ -38,9 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
 		</div>`;
 	} else {
 		navbar.innerHTML = `
-						<div id="title">
-							<h1>
-								<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" style="text-decoration: none; color: inherit;">CO2 Global Emissions Visual Analysis</a>
+						<div id="title" style = "text-align: center">
+							<h1 style = "text-align: center">
+								<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" text-decoration: none; color: inherit;">CO2 Global Emissions Visual Analysis</a>
 							</h1>
 						</div>`;
 	}
