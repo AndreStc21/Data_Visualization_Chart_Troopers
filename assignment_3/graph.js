@@ -5,10 +5,6 @@ let width =
 let height =
 	document.getElementById("plot1").clientHeight - margin.top - margin.bottom;
 
-function ruota_cazzo(projection, event) {
-	projection.rotate([0.1, 0.1]);
-}
-
 // Create the SVG container for first plot
 const svg_plot1 = d3
 	.select("#plot1")
@@ -45,13 +41,13 @@ const svg_plot4 = d3
 	.append("g")
 	.attr("transform", `translate(${margin.left},${margin.top})`);
 
-function map_plot(data, topo, svg_plot, id_div, proj, units){
+function map_plot(data, topo, svg_plot, id_div, map_type, units){
   const formatNumber = d3.format(",.0f");
   const format = (d) => `${formatNumber(d)} ${units}`;
   // Map and projection
   const path = d3.geoPath();
   let projection = NaN
-  if(proj==="orthographic"){
+  if(map_type === "orthographic"){
     projection = d3
     .geoOrthographic()
     .scale(200)
@@ -130,11 +126,48 @@ function map_plot(data, topo, svg_plot, id_div, proj, units){
 		tooltip.style("opacity", 0);
 	};
 
-	var mouseClick = function(d){return;}
+	if (map_type === "orthographic") {
+	  // zoom AND rotate
+	  svg_plot.call(d3.zoom().on("zoom", zoomed));
 
-	if(proj==="orthographic"){
-		mouseClick = function(event, d){ruota_cazzo(projection, event)}
+	  // Scale functions for converting pixel translations to geographic coordinates
+	  var lambda = d3.scaleLinear()
+		.domain([-width, width])
+		.range([-180, 180]);
+	  
+	  var theta = d3.scaleLinear()
+		.domain([-height, height])
+		.range([90, -90]);
+	  
+	  // Variables to store the last translation values
+	  var lastX = 0, lastY = 0;
+	  var origin = { x: 0, y: 0 };
+	  var scale = projection.scale(); // Initial scale of the projection
+	  
+	  function zoomed(event) {
+		var transform = event.transform;
+		var r = {
+		  x: lambda(transform.x),
+		  y: theta(transform.y)
+		};
+	  
+		if (event.sourceEvent && event.sourceEvent.type === "wheel") {
+		  // Handle zooming (mouse wheel)
+		  projection.scale(scale * transform.k);
+		  transform.x = lastX;
+		  transform.y = lastY;
+		} else {
+		  // Handle panning (dragging)
+		  projection.rotate([origin.x + r.x, origin.y + r.y]);
+		  lastX = transform.x;
+		  lastY = transform.y;
+		}
+	  
+		// Update the map paths
+		svg_plot.selectAll("path").attr("d", d3.geoPath().projection(projection));
+	  }
 	}
+	  
 
 	// Draw the map
 	svg_plot
@@ -157,8 +190,7 @@ function map_plot(data, topo, svg_plot, id_div, proj, units){
 		.style("opacity", 1)
 		.on("mouseover", mouseOver)
 		.on("mouseleave", mouseLeave)
-		.on("mousemove", mouseMove)
-		.on("click", mouseClick);
+		.on("mousemove", mouseMove);
 }
 
 
