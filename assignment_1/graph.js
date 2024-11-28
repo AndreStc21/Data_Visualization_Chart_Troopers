@@ -480,6 +480,7 @@ function small_multiples_bar_plot(data, id_div) {
 }
 
 function heatmap_plot(data, svg_plot, id_div) {
+	/*
 	var max_value_fossil = 0;
 	var second_max_value_fossil = 0;
 	var min_value_fossil = Infinity;
@@ -517,16 +518,40 @@ function heatmap_plot(data, svg_plot, id_div) {
 			}
 		}
 	});
+	*/
+	var max_value_fossil = -Infinity;
+	var min_value_fossil = Infinity;
+
+	var max_value_land = -Infinity;
+	var min_value_land = Infinity;
+
+	data.forEach((d) => {
+		if (d.group == "fossil") {
+			if (d.value > max_value_fossil) {
+				max_value_fossil = d.value;
+			}
+			if (d.value < min_value_fossil) {
+				min_value_fossil = d.value;
+			}
+		} else {
+			if (d.value > max_value_land) {
+				max_value_land = d.value;
+			}
+			if (d.value < min_value_land) {
+				min_value_land = d.value;
+			}
+		}
+	});
 
 	const myColor_fossil = d3
 		.scaleLinear()
-		.range(["green", "white", "red"])
-		.domain([min_value_fossil, 0, second_max_value_fossil]);
+		.range(["white", "red"])
+		.domain([min_value_fossil, max_value_fossil]);
 
 	const myColor_land = d3
 		.scaleLinear()
 		.range(["green", "white", "red"])
-		.domain([min_value_land, 0, second_max_value_land]);
+		.domain([min_value_land, 0, max_value_land]);
 
 	const y = d3
 		.scaleBand()
@@ -603,8 +628,7 @@ function heatmap_plot(data, svg_plot, id_div) {
 	linearGradientFossil
 		.selectAll("stop")
 		.data([
-			{ offset: "0%", color: "green" },
-			{ offset: "50%", color: "white" },
+			{ offset: "0%", color: "white" },
 			{ offset: "100%", color: "red" },
 		])
 		.enter()
