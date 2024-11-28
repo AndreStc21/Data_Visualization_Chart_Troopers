@@ -70,9 +70,7 @@ nav {
 }
 
 #topnav #title {
-	font-size: 22px;
-	padding-top: 14px;
-	padding-bottom: 14px;
+	font-size: 18px;
 }
 
 #topnav a {
@@ -90,8 +88,8 @@ nav {
 #topnav a.icon {
 	padding: 0px;
 	position: absolute;
-	right: 55px;
-	top: 55px;
+	right: 50px;
+	top: 50px;
 }
 
 #all-graph-container {

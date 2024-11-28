@@ -18,32 +18,23 @@ document.write(`
 document.addEventListener("DOMContentLoaded", function () {
 	const navbar = document.createElement("nav");
 	navbar.id = "topnav";
-	if (location.pathname.includes("assignment")) {
-		navbar.innerHTML = `
-		<div id="hamburger">
-			<a href="javascript:void(0);" class="icon" onclick="toggleMenu()" style="text-decoration: none; color: inherit;">
-				<i class="fa fa-bars"></i>
-			</a>
-		</div>
-		<div id="title">
-			<h1 class = "center">
-				<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers">CO2 Global Emissions Visual Analysis</a>
-			</h1>
-		</div>
-		<div id="dropdown-menu">
-			<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers">Homepage</a>
-			<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_1/website.html">CO2 emissions initial analysis</a>
-			<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_2/website.html">CO2 Emissions Flow Analysis</a>
-			<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_3/website.html">CO2 Emissions Topological Analysis</a>
-		</div>`;
-	} else {
-		navbar.innerHTML = `
-						<div id="title" style = "text-align: center">
-							<h1 style = "text-align: center">
-								<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/" text-decoration: none; color: inherit;">CO2 Global Emissions Visual Analysis</a>
-							</h1>
-						</div>`;
-	}
+	navbar.innerHTML = `
+	<div id="hamburger">
+		<a href="javascript:void(0);" class="icon" onclick="toggleMenu()" style="text-decoration: none; color: inherit;">
+			<i class="fa fa-bars"></i>
+		</a>
+	</div>
+	<div id="title">
+		<h1 class = "center">
+			<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers">CO2 Global Emissions Visual Analysis</a>
+		</h1>
+	</div>
+	<div id="dropdown-menu">
+		<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers">Homepage</a>
+		<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_1/website.html">CO2 emissions initial analysis</a>
+		<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_2/website.html">CO2 Emissions Flow Analysis</a>
+		<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_3/website.html">CO2 Emissions Topological Analysis</a>
+	</div>`;
 
 	document.body.insertBefore(navbar, document.body.firstChild);
 });
