@@ -48,7 +48,7 @@ const svg_plot6 = d3
 	.select("#plot6")
 	.append("svg")
 	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
+	.attr("height", height + margin.top + margin.bottom + 130)
 	.append("g")
 	.attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -585,7 +585,7 @@ function heatmap_plot(data, svg_plot, id_div) {
 	const legendHeight = 20;
 	const legendWidth = width * 0.8;
 	const legendX = (width - legendWidth) / 2;
-	const legendY = height + 60;
+	const legendY = height + 150;
 
 	svg_plot
 		.append("g")
@@ -625,6 +625,16 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.attr("class", "legend-axis")
 		.attr("transform", `translate(${legendX}, ${legendY + legendHeight})`)
 		.call(legendAxis);
+
+	const legendText = "Emission Values (millions of tonnes)";
+
+	svg_plot
+		.append("text")
+		.attr("x", legendX + legendWidth / 2) // Centrare il testo sopra la legenda
+		.attr("y", legendY - 10) // Posizionare il testo sopra la legenda
+		.attr("text-anchor", "middle") // Allineare il testo al centro
+		.style("font-size", "12px") // Imposta la dimensione del carattere
+		.text(legendText); // Imposta il testo da visualizzare
 
 	/*
 
