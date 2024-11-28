@@ -48,7 +48,7 @@ const svg_plot6 = d3
 	.select("#plot6")
 	.append("svg")
 	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom + 130)
+	.attr("height", height + margin.top + margin.bottom + 170)
 	.append("g")
 	.attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -518,8 +518,6 @@ function heatmap_plot(data, svg_plot, id_div) {
 		}
 	});
 
-	// console.log(max_value_fossil, second_max_value_fossil);
-
 	const myColor_fossil = d3
 		.scaleLinear()
 		.range(["green", "white", "red"])
@@ -582,6 +580,7 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.style("left", "0px")
 		.style("top", "0px");
 
+	// Legend 4 fossil
 	const legendHeight = 20;
 	const legendWidth = width * 0.8;
 	const legendX = (width - legendWidth) / 2;
@@ -594,14 +593,14 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.append("rect")
 		.attr("width", legendWidth)
 		.attr("height", legendHeight)
-		.style("fill", "url(#linear-gradient)");
+		.style("fill", "url(#linear-gradient-fossil)");
 
 	const defs = svg_plot.append("defs");
-	const linearGradient = defs
+	const linearGradientFossil = defs
 		.append("linearGradient")
-		.attr("id", "linear-gradient");
+		.attr("id", "linear-gradient-fossil");
 
-	linearGradient
+	linearGradientFossil
 		.selectAll("stop")
 		.data([
 			{ offset: "0%", color: "green" },
@@ -613,20 +612,26 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.attr("offset", (d) => d.offset)
 		.attr("stop-color", (d) => d.color);
 
-	const legendScale = d3
+	const legendScaleFossil = d3
 		.scaleLinear()
 		.domain([min_value_fossil, max_value_fossil])
 		.range([0, legendWidth]);
 
-	const legendAxis = d3.axisBottom(legendScale).ticks(5);
+	const legendAxisFossil = d3
+		.axisBottom(legendScaleFossil)
+		.tickValues([
+			min_value_fossil,
+			(min_value_fossil + max_value_fossil) / 4,
+			(min_value_fossil + max_value_fossil) / 2,
+			((min_value_fossil + max_value_fossil) * 3) / 4,
+			max_value_fossil,
+		]);
 
 	svg_plot
 		.append("g")
 		.attr("class", "legend-axis")
 		.attr("transform", `translate(${legendX}, ${legendY + legendHeight})`)
-		.call(legendAxis);
-
-	const legendText = "Emission Values (millions of tonnes)";
+		.call(legendAxisFossil);
 
 	svg_plot
 		.append("text")
@@ -634,8 +639,69 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.attr("y", legendY - 10)
 		.attr("text-anchor", "middle")
 		.style("font-size", "12px")
-		.text(legendText);
+		.text("Fossil Emission Values (millions of tonnes)");
 
+	// Legend 4 land
+	const legendYLand = legendY + legendHeight + 60;
+
+	svg_plot
+		.append("g")
+		.attr("class", "legend-land")
+		.attr("transform", `translate(${legendX}, ${legendYLand})`)
+		.append("rect")
+		.attr("width", legendWidth)
+		.attr("height", legendHeight)
+		.style("fill", "url(#linear-gradient-land)");
+
+	const linearGradientLand = defs
+		.append("linearGradient")
+		.attr("id", "linear-gradient-land");
+
+	linearGradientLand
+		.selectAll("stop")
+		.data([
+			{ offset: "0%", color: "green" },
+			{ offset: "50%", color: "white" },
+			{ offset: "100%", color: "red" },
+		])
+		.enter()
+		.append("stop")
+		.attr("offset", (d) => d.offset)
+		.attr("stop-color", (d) => d.color);
+
+	const legendScaleLand = d3
+		.scaleLinear()
+		.domain([min_value_land, max_value_land])
+		.range([0, legendWidth]);
+
+	const legendAxisLand = d3
+		.axisBottom(legendScaleLand)
+		.tickValues([
+			min_value_land,
+			(min_value_land + max_value_land) / 4,
+			(min_value_land + max_value_land) / 2,
+			((min_value_land + max_value_land) * 3) / 4,
+			max_value_land,
+		]);
+
+	svg_plot
+		.append("g")
+		.attr("class", "legend-axis-land")
+		.attr(
+			"transform",
+			`translate(${legendX}, ${legendYLand + legendHeight})`
+		)
+		.call(legendAxisLand);
+
+	svg_plot
+		.append("text")
+		.attr("x", legendX + legendWidth / 2)
+		.attr("y", legendYLand - 10)
+		.attr("text-anchor", "middle")
+		.style("font-size", "12px")
+		.text("Land Emission Values (millions of tonnes)");
+
+	// Tooltip and interaction functions
 	var mouseover = function (event, d) {
 		d3.selectAll(id_div + "  rect").style("opacity", 0.2);
 		d3.select(this).style("opacity", 1);
