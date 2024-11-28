@@ -582,8 +582,6 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.style("left", "0px")
 		.style("top", "0px");
 
-	////////////////////// GPT
-
 	const legendHeight = 20;
 	const legendWidth = width * 0.8; // 80% of graph's width
 	const legendX = (width - legendWidth) / 2; // Center it
@@ -627,8 +625,6 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.attr("class", "legend-axis")
 		.attr("transform", `translate(${legendX}, ${legendY + legendHeight})`)
 		.call(legendAxis);
-
-	/////////////////// GPT - FINE
 
 	/////////////////////////////////////////////////////////////
 	/*
