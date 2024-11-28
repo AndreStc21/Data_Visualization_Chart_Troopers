@@ -5,10 +5,9 @@ let width =
 let height =
 	document.getElementById("plot1").clientHeight - margin.top - margin.bottom;
 
-// Format variables
-const units = "millions tonnes";
-const formatNumber = d3.format(",.0f");
-const format = (d) => `${formatNumber(d)} ${units}`;
+function ruota_cazzo(projection, event) {
+	projection.rotate([0.1, 0.1]);
+}
 
 // Create the SVG container for first plot
 const svg_plot1 = d3
@@ -28,7 +27,27 @@ const svg_plot2 = d3
 	.append("g")
 	.attr("transform", `translate(${margin.left},${margin.top})`);
 
-function map_plot(data, topo, svg_plot, id_div, proj){
+// Create the SVG container for third plot
+const svg_plot3 = d3
+	.select("#plot3")
+	.append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform", `translate(${margin.left},${margin.top})`);
+
+// Create the SVG container for fourth plot
+const svg_plot4 = d3
+	.select("#plot4")
+	.append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform", `translate(${margin.left},${margin.top})`);
+
+function map_plot(data, topo, svg_plot, id_div, proj, units){
+  const formatNumber = d3.format(",.0f");
+  const format = (d) => `${formatNumber(d)} ${units}`;
   // Map and projection
   const path = d3.geoPath();
   let projection = NaN
@@ -111,6 +130,12 @@ function map_plot(data, topo, svg_plot, id_div, proj){
 		tooltip.style("opacity", 0);
 	};
 
+	var mouseClick = function(d){return;}
+
+	if(proj==="orthographic"){
+		mouseClick = function(event, d){ruota_cazzo(projection, event)}
+	}
+
 	// Draw the map
 	svg_plot
 		.append("g")
@@ -132,7 +157,8 @@ function map_plot(data, topo, svg_plot, id_div, proj){
 		.style("opacity", 1)
 		.on("mouseover", mouseOver)
 		.on("mouseleave", mouseLeave)
-		.on("mousemove", mouseMove);
+		.on("mousemove", mouseMove)
+		.on("click", mouseClick);
 }
 
 
@@ -146,6 +172,20 @@ Promise.all([
 	}),
 ]).then(function (loadData) {
 	let topo = loadData[0];
-  map_plot(data, topo, svg_plot1, 'plot_1', 'mercator');
-  map_plot(data, topo, svg_plot2, 'plot_2', 'orthographic');
+  map_plot(data, topo, svg_plot1, 'plot_1', 'mercator', "millions tonnes");
+  map_plot(data, topo, svg_plot2, 'plot_2', 'orthographic', "millions tonnes");
+});
+
+// Data and color scale
+var data = new Map();
+// Load external data and boot
+Promise.all([
+	d3.json("world.geojson"),
+	d3.csv("co2-emissions-per-capita.csv", function (d) {
+		data.set(d.Code, +d.Emissions);
+	}),
+]).then(function (loadData) {
+	let topo = loadData[0];
+  map_plot(data, topo, svg_plot3, 'plot_3', 'mercator', "tonnes");
+  map_plot(data, topo, svg_plot4, 'plot_4', 'orthographic', "tonnes");
 });
