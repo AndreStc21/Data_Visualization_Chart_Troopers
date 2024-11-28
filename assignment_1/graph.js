@@ -583,8 +583,8 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.style("top", "0px");
 
 	const legendHeight = 20;
-	const legendWidth = width * 0.8; // 80% of graph's width
-	const legendX = (width - legendWidth) / 2; // Center it
+	const legendWidth = width * 0.8;
+	const legendX = (width - legendWidth) / 2;
 	const legendY = height + 60;
 
 	svg_plot
@@ -626,7 +626,6 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.attr("transform", `translate(${legendX}, ${legendY + legendHeight})`)
 		.call(legendAxis);
 
-	/////////////////////////////////////////////////////////////
 	/*
 
 	// Trying to add a gradient colormap legend to the heatmap
@@ -662,7 +661,6 @@ function heatmap_plot(data, svg_plot, id_div) {
 			return d.color;
 		});
 
-	/////////////////////////////////////////////////////////////
 	*/
 
 	var mouseover = function (event, d) {
