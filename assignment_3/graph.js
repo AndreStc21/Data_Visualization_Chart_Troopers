@@ -5,43 +5,27 @@ let width =
 let height =
 	document.getElementById("plot1").clientHeight - margin.top - margin.bottom;
 
+function create_svg(id, width, height, margin) {
+	return d3
+		.select(id)
+		.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom);
+}
+
 // Create the SVG container for first plot
-const svg_plot1 = d3
-	.select("#plot1")
-	.append("svg")
-	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("transform", `translate(${margin.left},${margin.top})`);
+const svg_plot1 = create_svg("#plot1", width, height, margin);
 
 // Create the SVG container for second plot
-const svg_plot2 = d3
-	.select("#plot2")
-	.append("svg")
-	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("transform", `translate(${margin.left},${margin.top})`);
+const svg_plot2 = create_svg("#plot2", width, height, margin);
 
 // Create the SVG container for third plot
-const svg_plot3 = d3
-	.select("#plot3")
-	.append("svg")
-	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("transform", `translate(${margin.left},${margin.top})`);
+const svg_plot3 = create_svg("#plot3", width, height, margin);
 
 // Create the SVG container for fourth plot
-const svg_plot4 = d3
-	.select("#plot4")
-	.append("svg")
-	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("transform", `translate(${margin.left},${margin.top})`);
+const svg_plot4 = create_svg("#plot4", width, height, margin);
 
-function map_plot(data, topo, svg_plot, id_div, map_type, units) {
+function map_plot(data, topo, svg_plot, colorScheme, id_div, map_type, units) {
 	const formatNumber = d3.format(",.0f");
 	const format = (d) => `${formatNumber(d)} ${units}`;
 	// Map and projection
@@ -51,15 +35,15 @@ function map_plot(data, topo, svg_plot, id_div, map_type, units) {
 		projection = d3
 			.geoOrthographic()
 			.scale(200)
-			.center([0, 0])
-			.translate([width / 2, height / 2]);
 	} else {
 		projection = d3
 			.geoMercator()
 			.scale(100)
-			.center([0, 0])
-			.translate([width / 2, height / 2]);
 	}
+
+	projection = projection
+					.center([0, 0])
+					.translate([width / 2, height / 2]);
 
 	var tooltip = d3
 		.select("#content-wrap")
@@ -86,10 +70,10 @@ function map_plot(data, topo, svg_plot, id_div, map_type, units) {
 	thresholds.unshift(minVal);
 	thresholds.push(maxVal);
 
-	const colorScale = d3
+	let colorScale = d3
 		.scaleThreshold()
 		.domain(thresholds)
-		.range(d3.schemeReds[7]);
+		.range(colorScheme);
 
 	let mouseOver = function (d) {
 		d3.selectAll(".Country " + id_div)
@@ -180,6 +164,8 @@ function map_plot(data, topo, svg_plot, id_div, map_type, units) {
 	// Draw the map
 	svg_plot
 		.append("g")
+		.attr("transform", `translate(${margin.left},${margin.top})`)
+		.append("g")
 		.selectAll("path")
 		.data(topo.features)
 		.enter()
@@ -211,10 +197,12 @@ Promise.all([
 	let dataTotalEmissions = new Map(
 		loadData[1].map((d) => [d.code, d.emissions])
 	);
+	let colorScheme = d3.schemeReds[7];
 	map_plot(
 		dataTotalEmissions,
 		topo,
 		svg_plot1,
+		colorScheme,
 		"plot_1",
 		"mercator",
 		"millions tonnes"
@@ -223,6 +211,7 @@ Promise.all([
 		dataTotalEmissions,
 		topo,
 		svg_plot2,
+		colorScheme,
 		"plot_2",
 		"orthographic",
 		"millions tonnes"
@@ -239,10 +228,12 @@ Promise.all([
 	let dataPerCapitaEmissions = new Map(
 		loadData[1].map((d) => [d.code, d.emissions])
 	);
+	let colorScheme = d3.schemeOranges[7];
 	map_plot(
 		dataPerCapitaEmissions,
 		topo,
 		svg_plot3,
+		colorScheme,
 		"plot_3",
 		"mercator",
 		"tonnes"
@@ -251,6 +242,7 @@ Promise.all([
 		dataPerCapitaEmissions,
 		topo,
 		svg_plot4,
+		colorScheme,
 		"plot_4",
 		"orthographic",
 		"tonnes"
