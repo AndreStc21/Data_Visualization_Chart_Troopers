@@ -24,9 +24,10 @@
 	align-items: center;
 }
 
+/* Senza stile #plot1 non fa i grafici! */
 #plot1 {
-	width: 50%;
-	height: 40rem;
+	width: 700px;
+	height: 640px;
 }
 
 .node rect {
