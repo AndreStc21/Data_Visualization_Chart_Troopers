@@ -546,7 +546,7 @@ function heatmap_plot(data, svg_plot, id_div) {
 	const myColor_fossil = d3
 		.scaleLinear()
 		.range(["white", "red"])
-		.domain([min_value_fossil, max_value_fossil]);
+		.domain([0, max_value_fossil]);
 
 	const myColor_land = d3
 		.scaleLinear()
@@ -638,16 +638,16 @@ function heatmap_plot(data, svg_plot, id_div) {
 
 	const legendScaleFossil = d3
 		.scaleLinear()
-		.domain([min_value_fossil, max_value_fossil])
+		.domain([0, max_value_fossil])
 		.range([0, legendWidth]);
 
 	const legendAxisFossil = d3
 		.axisBottom(legendScaleFossil)
 		.tickValues([
-			min_value_fossil,
-			(min_value_fossil + max_value_fossil) / 4,
-			(min_value_fossil + max_value_fossil) / 2,
-			((min_value_fossil + max_value_fossil) * 3) / 4,
+			0,
+			(0 + max_value_fossil) / 4,
+			(0 + max_value_fossil) / 2,
+			((0 + max_value_fossil) * 3) / 4,
 			max_value_fossil,
 		]);
 
@@ -695,16 +695,16 @@ function heatmap_plot(data, svg_plot, id_div) {
 
 	const legendScaleLand = d3
 		.scaleLinear()
-		.domain([min_value_land, max_value_land])
-		.range([0, legendWidth]);
+		.domain([min_value_land, 0, max_value_land])
+		.range([0, legendWidth/2, legendWidth]);
 
 	const legendAxisLand = d3
 		.axisBottom(legendScaleLand)
 		.tickValues([
 			min_value_land,
-			(min_value_land + max_value_land) / 4,
-			(min_value_land + max_value_land) / 2,
-			((min_value_land + max_value_land) * 3) / 4,
+			min_value_land / 2,
+			0,
+			max_value_land / 2,
 			max_value_land,
 		]);
 
@@ -728,6 +728,8 @@ function heatmap_plot(data, svg_plot, id_div) {
 	// Tooltip and interaction functions
 	var mouseover = function (event, d) {
 		d3.selectAll(id_div + "  rect").style("opacity", 0.2);
+		d3.selectAll(".legend  rect").style("opacity", 1);
+		d3.selectAll(".legend-land  rect").style("opacity", 1);
 		d3.select(this).style("opacity", 1);
 		info = d3.select(this).datum();
 		tooltip
@@ -768,6 +770,7 @@ function heatmap_plot(data, svg_plot, id_div) {
 		})
 		.attr("width", x.bandwidth())
 		.attr("height", y.bandwidth())
+		.style("stroke", "black")
 		.style("fill", function (d) {
 			if (d.group == "fossil") {
 				return myColor_fossil(d.value);
