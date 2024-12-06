@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				<div id="footer-bottom">
 					<div style="border-top: 1px solid white; margin: 16px 0;"></div>
 					<div style="text-align: center">
-						<a href="../sources.html" style="color: whitesmoke;">
+						<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/sources.html" style="color: whitesmoke;">
 							Data sources
 						</a>
 					</div>
