@@ -45,21 +45,31 @@ document.addEventListener("DOMContentLoaded", function () {
 	if (footer) {
 		footer.innerHTML = `
             <div id="footer-container">
-                <div id="footer-left">
-                    <span>Chart Troopers:</span>
-                    <span>Andrea Stucchi - Marco Cosulich - Riccardo Cicala</span>
-                </div>
-				<div id=footer-center>
-					<span>Universita' di Genova</span>
+                <div id="footer-up">
+					<div id="footer-left">
+						<span>Chart Troopers:</span>
+						<span>Andrea Stucchi - Marco Cosulich - Riccardo Cicala</span>
+					</div>
+					<div id=footer-center>
+						<span>Universita' di Genova</span>
+					</div>
+					<div id="footer-right">
+						<span>Follow us on:</span>
+						<div id="footer-list">
+							<span><i class="fab fa-twitter"></i> Twitter</span>
+							<span><i class="fab fa-instagram"></i> Instagram</span>
+							<span><i class="fab fa-linkedin"></i> LinkedIn</span>
+						</div>
+					</div>
 				</div>
-                <div id="footer-right">
-                    <span>Follow us on:</span>
-                    <div id="footer-list">
-                        <span><i class="fab fa-twitter"></i> Twitter</span>
-                        <span><i class="fab fa-instagram"></i> Instagram</span>
-                        <span><i class="fab fa-linkedin"></i> LinkedIn</span>
-                    </div>
-                </div>
+				<div id="footer-bottom">
+					<div style="border-top: 1px solid white; margin: 16px 0;"></div>
+					<div style="text-align: center">
+						<a href="../sources.html" style="color: whitesmoke;">
+							Data sources
+						</a>
+					</div>
+				</div>
             </div>
         `;
 	}
