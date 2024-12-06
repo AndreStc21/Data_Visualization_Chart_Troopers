@@ -13,7 +13,7 @@ body {
 }
 
 #sections-container {
-	margin-top: 30px;
+	height: 730px;
 	margin-left: 100px;
 	display: flex;
 	flex-direction: column;
