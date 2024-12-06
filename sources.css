@@ -1,0 +1,11 @@
+#data-links-container {
+	display: flex;
+	flex-direction: column;
+	width: fit-content;
+	margin-top: 90px;
+	margin-left: 140px;
+}
+
+a {
+	width: fit-content;
+}
