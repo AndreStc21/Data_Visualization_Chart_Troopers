@@ -33,7 +33,8 @@ Promise.all([
   // Process nodes data - create array of node objects
   const nodes = nodesData.map(d => ({
     name: d.node,
-    real_value: d.real_value,
+    value: d.real_value,
+    value_fake: d.value,
     indirect_links: new Set(JSON.parse(d.indirect_links)),
     color: d.color
   }));
@@ -42,8 +43,8 @@ Promise.all([
   const links = linksData.map(d => ({
     source: parseInt(d.source),
     target: parseInt(d.target),
-    value: parseFloat(d.value),
-    real_value: parseFloat(d.real_value)
+    value: parseFloat(d.real_value),
+    // real_value: parseFloat(d.real_value)
   }));
 
   // Generate the sankey diagram
@@ -78,7 +79,7 @@ Promise.all([
     .attr("class", "link")
     .attr("d", d3.sankeyLinkHorizontal())
     .attr("stroke", (d, i) => `url(#gradient-${i})`)
-    .attr("stroke-width", d => Math.max(1, d.width))
+    .attr("stroke-width", d => Math.max(0, d.width))
     .on("mouseover", highlightFlowLink)
     .on("mouseout", unhighlightFlow)
     .on("mousemove", tooltipMousemove);
@@ -110,7 +111,7 @@ Promise.all([
 
   // Add rectangles for the nodes
   node.append("rect")
-    .attr("height", d => d.y1 - d.y0)
+    .attr("height", d => (d.y1 - d.y0)*(d.value/d.value_fake))
     .attr("width", d => d.x1 - d.x0)
     .attr("fill", d => d.color)
     .attr("stroke", "#000")
@@ -152,7 +153,7 @@ Promise.all([
     node.filter(n => linkedNodes.has(n))
       .style("opacity", 1);
     
-    tooltip.html("Total CO2 emission: " + d.real_value + " " + units).style("opacity", 1);
+    tooltip.html("Total CO2 emission: " + d.value + " " + units).style("opacity", 1);
   }
 
   // Function to remove highlighting
@@ -187,10 +188,10 @@ Promise.all([
     node.filter(n => linkedNodes.has(n))
       .style("opacity", 1);
     if(d.target.name==="fossil"||d.target.name==="land"){
-      tooltip.html(d.source.name + " CO2 " + d.target.name+ " emission: " + d.real_value + " " + units).style("opacity", 1);
+      tooltip.html(d.source.name + " CO2 " + d.target.name+ " emission: " + d.value + " " + units).style("opacity", 1);
     }
     if(d.source.name==="fossil"||d.source.name==="land"){
-      tooltip.html(d.target.name + " CO2 " + d.source.name+ " emission: " + d.real_value + " " + units).style("opacity", 1);
+      tooltip.html(d.target.name + " CO2 " + d.source.name+ " emission: " + d.value + " " + units).style("opacity", 1);
     }
   }
 
