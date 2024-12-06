@@ -143,13 +143,17 @@ nav {
 .mini-description {
 	width: 800px;
 	display: flex;
-	font-size: medium;
+	font-size: large;
 	line-height: 1.7;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
 	text-align: center;
 	margin-bottom: 20px;
+}
+
+.mini-description p {
+	font-size: medium;
 }
 
 #footer {
