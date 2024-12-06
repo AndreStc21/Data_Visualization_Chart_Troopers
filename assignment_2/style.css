@@ -1,13 +1,3 @@
-#page-container {
-	position: relative;
-	min-height: 100vh;
-}
-
-#content-wrap {
-	max-width: 1400px;
-	margin: 0 auto;
-}
-
 .center {
 	text-align: center;
 }
