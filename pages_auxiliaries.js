@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_1/website.html">CO2 emissions initial analysis</a>
 		<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_2/website.html">CO2 Emissions Flow Analysis</a>
 		<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_3/website.html">CO2 Emissions Topological Analysis</a>
+		<a class="links" href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers/assignment_4/website.html">U.S.A. Temperature Analysis</a>
 	</div>`;
 
 	document.body.insertBefore(navbar, document.body.firstChild);
