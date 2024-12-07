@@ -10,7 +10,7 @@ function create_svg(id, width, height, margin) {
 		.select(id)
 		.append("svg")
 		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom);
+		.attr("height", height + margin.top + margin.bottom + 150);
 }
 
 // Create the SVG container for first plot
@@ -25,6 +25,15 @@ const svg_plot3 = create_svg("#plot3", width, height, margin);
 // Create the SVG container for fourth plot
 const svg_plot4 = create_svg("#plot4", width, height, margin);
 
+// If we are using integer values cast everything to ingeger, otherwise keep only first decimal
+function customTickFormat(d) {
+	if (Number.isInteger(maxVal)) {
+		return d3.format(".0f")(d);
+	} else {
+		return d3.format(".1f")(d);
+	}
+}
+
 function map_plot(data, topo, svg_plot, colorScheme, id_div, map_type, units) {
 	const formatNumber = d3.format(",.0f");
 	const format = (d) => `${formatNumber(d)} ${units}`;
@@ -32,18 +41,12 @@ function map_plot(data, topo, svg_plot, colorScheme, id_div, map_type, units) {
 	const path = d3.geoPath();
 	let projection = NaN;
 	if (map_type === "orthographic") {
-		projection = d3
-			.geoOrthographic()
-			.scale(200)
+		projection = d3.geoOrthographic().scale(200);
 	} else {
-		projection = d3
-			.geoMercator()
-			.scale(100)
+		projection = d3.geoMercator().scale(100);
 	}
 
-	projection = projection
-					.center([0, 0])
-					.translate([width / 2, height / 2]);
+	projection = projection.center([0, 0]).translate([width / 2, height / 2]);
 
 	var tooltip = d3
 		.select("#content-wrap")
@@ -70,10 +73,7 @@ function map_plot(data, topo, svg_plot, colorScheme, id_div, map_type, units) {
 	thresholds.unshift(minVal);
 	thresholds.push(maxVal);
 
-	let colorScale = d3
-		.scaleThreshold()
-		.domain(thresholds)
-		.range(colorScheme);
+	let colorScale = d3.scaleThreshold().domain(thresholds).range(colorScheme);
 
 	let mouseOver = function (d) {
 		d3.selectAll(".Country " + id_div)
@@ -185,6 +185,70 @@ function map_plot(data, topo, svg_plot, colorScheme, id_div, map_type, units) {
 		.on("mouseover", mouseOver)
 		.on("mouseleave", mouseLeave)
 		.on("mousemove", mouseMove);
+
+	// Create gradient for the legend
+	const defs = svg_plot.append("defs");
+	const linearGradient = defs
+		.append("linearGradient")
+		.attr("id", `gradient-${id_div}`);
+
+	linearGradient
+		.selectAll("stop")
+		.data(
+			colorScale.range().map((color, i) => ({
+				offset: `${(i / (colorScale.range().length - 1)) * 100}%`,
+				color: color,
+			}))
+		)
+		.enter()
+		.append("stop")
+		.attr("offset", (d) => d.offset)
+		.attr("stop-color", (d) => d.color);
+
+	// Legend
+	const legendHeight = 20;
+	const legendWidth = width * 0.8;
+	const legendX = (width + margin.left) / 4;
+	const legendY = height + 100;
+
+	svg_plot
+		.append("g")
+		.attr("class", "legend")
+		.attr("transform", `translate(${legendX}, ${legendY})`)
+		.append("rect")
+		.attr("width", legendWidth)
+		.attr("height", legendHeight)
+		.style("fill", `url(#gradient-${id_div})`);
+
+	const legendScale = d3
+		.scaleLinear()
+		.domain([minVal, maxVal])
+		.range([0, legendWidth]);
+
+	const legendAxis = d3
+		.axisBottom(legendScale)
+		.tickValues([
+			minVal,
+			minVal + (maxVal - minVal) / 4,
+			(minVal + maxVal) / 2,
+			minVal + (3 * (maxVal - minVal)) / 4,
+			maxVal,
+		])
+		.tickFormat(customTickFormat);
+
+	svg_plot
+		.append("g")
+		.attr("class", "legend-axis")
+		.attr("transform", `translate(${legendX}, ${legendY + legendHeight})`)
+		.call(legendAxis);
+
+	svg_plot
+		.append("text")
+		.attr("x", legendX + legendWidth / 2)
+		.attr("y", legendY - 10)
+		.attr("text-anchor", "middle")
+		.style("font-size", "12px")
+		.text(`Emissions (${units})`);
 }
 
 Promise.all([
