@@ -1,6 +1,7 @@
 const margin = { top: 30, right: 30, bottom: 100, left: 100 },
 	width = 550 - margin.left - margin.right,
 	height = 550 - margin.top - margin.bottom;
+
 const colours = [
 	"#4C6A92",
 	"#F28C3B",
@@ -696,7 +697,7 @@ function heatmap_plot(data, svg_plot, id_div) {
 	const legendScaleLand = d3
 		.scaleLinear()
 		.domain([min_value_land, 0, max_value_land])
-		.range([0, legendWidth/2, legendWidth]);
+		.range([0, legendWidth / 2, legendWidth]);
 
 	const legendAxisLand = d3
 		.axisBottom(legendScaleLand)
