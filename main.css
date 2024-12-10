@@ -9,7 +9,7 @@ body {
 }
 
 #content-wrap {
-	padding-bottom: 3rem;
+	padding-bottom: 11rem;
 }
 
 #sections-container {
@@ -23,9 +23,20 @@ body {
 	margin-bottom: 20px;
 }
 
-.center {
+#center {
 	margin-top: 40px;
 	margin-bottom: 40px;
+	text-align: center;
+}
+
+#title {
+	margin-top: 40px;
+	margin-bottom: 0px;
+	text-align: center;
+}
+
+#subtitle {
+	margin: 0;
 	text-align: center;
 }
 
@@ -55,7 +66,9 @@ p {
 	display: none;
 }
 
-#topnav #title {
+#topnav #nav-title {
+	margin-top: 40px;
+	margin-bottom: 40px;
 	font-size: 18px;
 }
 
@@ -76,6 +89,19 @@ p {
 	position: absolute;
 	right: 50px;
 	top: 50px;
+}
+
+#page-description-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-size: medium;
+	line-height: 1.7;
+}
+
+#page-description {
+	font-size: large;
+	width: 60%;
 }
 
 #all-graph-container {

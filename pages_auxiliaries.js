@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			<i class="fa fa-bars"></i>
 		</a>
 	</div>
-	<div id="title">
-		<h1 class = "center">
+	<div id="nav-title">
+		<h1>
 			<a href="https://andrestc21.github.io/Data_Visualization_Chart_Troopers">CO2 Global Emissions Visual Analysis</a>
 		</h1>
 	</div>
