@@ -606,6 +606,69 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.style("left", "0px")
 		.style("top", "0px");
 
+	const legendHeight = 20;
+	const legendWidth = width * 0.8;
+	const legendX = (width - legendWidth) / 2;
+	const legendY = height + 150;
+
+	svg_plot
+		.append("g")
+		.attr("class", "legend")
+		.attr("transform", `translate(${legendX}, ${legendY})`)
+		.append("rect")
+		.attr("width", legendWidth)
+		.attr("height", legendHeight)
+		.style("fill", "url(#linear-gradient-fossil)");
+
+	const defs = svg_plot.append("defs");
+	const linearGradientFossil = defs
+		.append("linearGradient")
+		.attr("id", "linear-gradient-fossil");
+
+	linearGradientFossil
+		.selectAll("stop")
+		.data([
+			{ offset: "0%", color: "green" },
+			{ offset: "1%", color: "white" },
+			{ offset: "100%", color: "red" },
+		])
+		.enter()
+		.append("stop")
+		.attr("offset", (d) => d.offset)
+		.attr("stop-color", (d) => d.color);
+
+	var min_value = Math.min(min_value_fossil, min_value_land);
+	var max_value = Math.max(max_value_fossil, max_value_land);
+
+	const legendScale = d3
+		.scaleLinear()
+		.domain([min_value, max_value])
+		.range([0, legendWidth]);
+
+	const legendAxis = d3
+		.axisBottom(legendScale)
+		.tickValues([
+			min_value,
+			(min_value + max_value) / 4,
+			(min_value + max_value) / 2,
+			((min_value + max_value) * 3) / 4,
+			max_value,
+		]);
+
+	svg_plot
+		.append("g")
+		.attr("class", "legend-axis")
+		.attr("transform", `translate(${legendX}, ${legendY + legendHeight})`)
+		.call(legendAxis);
+
+	svg_plot
+		.append("text")
+		.attr("x", legendX + legendWidth / 2)
+		.attr("y", legendY - 10)
+		.attr("text-anchor", "middle")
+		.style("font-size", "12px")
+		.text("Emission Values (millions of tonnes)");
+	/*
 	// Legend 4 fossil
 	const legendHeight = 20;
 	const legendWidth = width * 0.8;
@@ -725,6 +788,7 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.attr("text-anchor", "middle")
 		.style("font-size", "12px")
 		.text("Land Emission Values (millions of tonnes)");
+		*/
 
 	// Tooltip and interaction functions
 	var mouseover = function (event, d) {
