@@ -481,45 +481,6 @@ function small_multiples_bar_plot(data, id_div) {
 }
 
 function heatmap_plot(data, svg_plot, id_div) {
-	/*
-	var max_value_fossil = 0;
-	var second_max_value_fossil = 0;
-	var min_value_fossil = Infinity;
-
-	var max_value_land = 0;
-	var second_max_value_land = 0;
-	var min_value_land = Infinity;
-
-	data.forEach((d) => {
-		if (d.group == "fossil") {
-			if (d.value > max_value_fossil) {
-				second_max_value_fossil = max_value_fossil;
-				max_value_fossil = d.value;
-			} else if (
-				d.value > second_max_value_fossil &&
-				d.value != max_value_fossil
-			) {
-				second_max_value_fossil = d.value;
-			}
-			if (d.value < min_value_fossil) {
-				min_value_fossil = d.value;
-			}
-		} else {
-			if (d.value > max_value_land) {
-				second_max_value_land = max_value_land;
-				max_value_land = d.value;
-			} else if (
-				d.value > second_max_value_land &&
-				d.value != max_value_land
-			) {
-				second_max_value_land = d.value;
-			}
-			if (d.value < min_value_land) {
-				min_value_land = d.value;
-			}
-		}
-	});
-	*/
 	var max_value_fossil = -Infinity;
 	var min_value_fossil = Infinity;
 
@@ -543,16 +504,6 @@ function heatmap_plot(data, svg_plot, id_div) {
 			}
 		}
 	});
-
-	const myColor_fossil = d3
-		.scaleLinear()
-		.range(["white", "red"])
-		.domain([0, max_value_fossil]);
-
-	const myColor_land = d3
-		.scaleLinear()
-		.range(["green", "white", "red"])
-		.domain([min_value_land, 0, max_value_land]);
 
 	const y = d3
 		.scaleBand()
@@ -629,7 +580,7 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.selectAll("stop")
 		.data([
 			{ offset: "0%", color: "green" },
-			{ offset: "1%", color: "white" },
+			{ offset: "50%", color: "white" },
 			{ offset: "100%", color: "red" },
 		])
 		.enter()
@@ -640,18 +591,23 @@ function heatmap_plot(data, svg_plot, id_div) {
 	var min_value = Math.min(min_value_fossil, min_value_land);
 	var max_value = Math.max(max_value_fossil, max_value_land);
 
+	const myColor = d3
+		.scaleLinear()
+		.range(["green", "white", "red"])
+		.domain([min_value, 0, max_value]);
+	
 	const legendScale = d3
 		.scaleLinear()
-		.domain([min_value, max_value])
-		.range([0, legendWidth]);
+		.domain([min_value, 0, max_value])
+		.range([0, legendWidth / 2, legendWidth]);
 
 	const legendAxis = d3
 		.axisBottom(legendScale)
 		.tickValues([
 			min_value,
-			(min_value + max_value) / 4,
-			(min_value + max_value) / 2,
-			((min_value + max_value) * 3) / 4,
+			(min_value) / 2,
+			0,
+			(max_value) / 2,
 			max_value,
 		]);
 
@@ -668,127 +624,6 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.attr("text-anchor", "middle")
 		.style("font-size", "12px")
 		.text("Emission Values (millions of tonnes)");
-	/*
-	// Legend 4 fossil
-	const legendHeight = 20;
-	const legendWidth = width * 0.8;
-	const legendX = (width - legendWidth) / 2;
-	const legendY = height + 150;
-
-	svg_plot
-		.append("g")
-		.attr("class", "legend")
-		.attr("transform", `translate(${legendX}, ${legendY})`)
-		.append("rect")
-		.attr("width", legendWidth)
-		.attr("height", legendHeight)
-		.style("fill", "url(#linear-gradient-fossil)");
-
-	const defs = svg_plot.append("defs");
-	const linearGradientFossil = defs
-		.append("linearGradient")
-		.attr("id", "linear-gradient-fossil");
-
-	linearGradientFossil
-		.selectAll("stop")
-		.data([
-			{ offset: "0%", color: "white" },
-			{ offset: "100%", color: "red" },
-		])
-		.enter()
-		.append("stop")
-		.attr("offset", (d) => d.offset)
-		.attr("stop-color", (d) => d.color);
-
-	const legendScaleFossil = d3
-		.scaleLinear()
-		.domain([0, max_value_fossil])
-		.range([0, legendWidth]);
-
-	const legendAxisFossil = d3
-		.axisBottom(legendScaleFossil)
-		.tickValues([
-			0,
-			(0 + max_value_fossil) / 4,
-			(0 + max_value_fossil) / 2,
-			((0 + max_value_fossil) * 3) / 4,
-			max_value_fossil,
-		]);
-
-	svg_plot
-		.append("g")
-		.attr("class", "legend-axis")
-		.attr("transform", `translate(${legendX}, ${legendY + legendHeight})`)
-		.call(legendAxisFossil);
-
-	svg_plot
-		.append("text")
-		.attr("x", legendX + legendWidth / 2)
-		.attr("y", legendY - 10)
-		.attr("text-anchor", "middle")
-		.style("font-size", "12px")
-		.text("Fossil Emission Values (millions of tonnes)");
-
-	// Legend 4 land
-	const legendYLand = legendY + legendHeight + 60;
-
-	svg_plot
-		.append("g")
-		.attr("class", "legend-land")
-		.attr("transform", `translate(${legendX}, ${legendYLand})`)
-		.append("rect")
-		.attr("width", legendWidth)
-		.attr("height", legendHeight)
-		.style("fill", "url(#linear-gradient-land)");
-
-	const linearGradientLand = defs
-		.append("linearGradient")
-		.attr("id", "linear-gradient-land");
-
-	linearGradientLand
-		.selectAll("stop")
-		.data([
-			{ offset: "0%", color: "green" },
-			{ offset: "50%", color: "white" },
-			{ offset: "100%", color: "red" },
-		])
-		.enter()
-		.append("stop")
-		.attr("offset", (d) => d.offset)
-		.attr("stop-color", (d) => d.color);
-
-	const legendScaleLand = d3
-		.scaleLinear()
-		.domain([min_value_land, 0, max_value_land])
-		.range([0, legendWidth / 2, legendWidth]);
-
-	const legendAxisLand = d3
-		.axisBottom(legendScaleLand)
-		.tickValues([
-			min_value_land,
-			min_value_land / 2,
-			0,
-			max_value_land / 2,
-			max_value_land,
-		]);
-
-	svg_plot
-		.append("g")
-		.attr("class", "legend-axis-land")
-		.attr(
-			"transform",
-			`translate(${legendX}, ${legendYLand + legendHeight})`
-		)
-		.call(legendAxisLand);
-
-	svg_plot
-		.append("text")
-		.attr("x", legendX + legendWidth / 2)
-		.attr("y", legendYLand - 10)
-		.attr("text-anchor", "middle")
-		.style("font-size", "12px")
-		.text("Land Emission Values (millions of tonnes)");
-		*/
 
 	// Tooltip and interaction functions
 	var mouseover = function (event, d) {
@@ -837,11 +672,7 @@ function heatmap_plot(data, svg_plot, id_div) {
 		.attr("height", y.bandwidth())
 		.style("stroke", "black")
 		.style("fill", function (d) {
-			if (d.group == "fossil") {
-				return myColor_fossil(d.value);
-			} else {
-				return myColor_land(d.value);
-			}
+			return myColor(d.value);
 		})
 		.on("mouseover", mouseover)
 		.on("mousemove", mousemove)
