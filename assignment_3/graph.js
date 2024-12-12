@@ -117,49 +117,7 @@ function map_plot(data, topo, svg_plot, colorScheme, id_div, map_type, units) {
 		tooltip.style("opacity", 0);
 	};
 
-	if (map_type === "orthographic") {
-		// zoom AND rotate
-		svg_plot.call(d3.zoom().on("zoom", zoomed));
-
-		// Scale functions for converting pixel translations to geographic coordinates
-		var lambda = d3
-			.scaleLinear()
-			.domain([-width, width])
-			.range([-180, 180]);
-
-		var theta = d3.scaleLinear().domain([-height, height]).range([90, -90]);
-
-		// Variables to store the last translation values
-		var lastX = 0,
-			lastY = 0;
-		var origin = { x: 0, y: 0 };
-		var scale = projection.scale(); // Initial scale of the projection
-
-		function zoomed(event) {
-			var transform = event.transform;
-			var r = {
-				x: lambda(transform.x),
-				y: theta(transform.y),
-			};
-
-			if (event.sourceEvent && event.sourceEvent.type === "wheel") {
-				// Handle zooming (mouse wheel)
-				projection.scale(scale * transform.k);
-				transform.x = lastX;
-				transform.y = lastY;
-			} else {
-				// Handle panning (dragging)
-				projection.rotate([origin.x + r.x, origin.y + r.y]);
-				lastX = transform.x;
-				lastY = transform.y;
-			}
-
-			// Update the map paths
-			svg_plot
-				.selectAll("path")
-				.attr("d", d3.geoPath().projection(projection));
-		}
-	}
+	
 
 	// Draw the map
 	svg_plot
@@ -249,7 +207,58 @@ function map_plot(data, topo, svg_plot, colorScheme, id_div, map_type, units) {
 		.attr("text-anchor", "middle")
 		.style("font-size", "12px")
 		.text(`Emissions (${units})`);
+		if (map_type === "orthographic") {
+			// Enable zoom and rotate
+			const zoomBehavior = d3.zoom().on("zoom", zoomed);
+			svg_plot.call(zoomBehavior);
+		
+			// Scale functions for converting pixel translations to geographic coordinates
+			var lambda = d3
+				.scaleLinear()
+				.domain([-width, width])
+				.range([-180, 180]);
+		
+			var theta = d3
+				.scaleLinear()
+				.domain([-height, height])
+				.range([90, -90]);
+		
+			// Variables to store the last translation and scale values
+			var lastX = 0,
+				lastY = 0;
+			var origin = { x: 0, y: 0 };
+			var scale = projection.scale(); // Initial scale of the projection
+		
+			// Function for zoom and drag
+			function zoomed(event) {
+				var transform = event.transform;
+				var r = {
+					x: lambda(transform.x),
+					y: theta(transform.y),
+				};
+		
+				if (event.sourceEvent && event.sourceEvent.type === "wheel") {
+					// Handle zooming (mouse wheel)
+					projection.scale(scale * transform.k);
+					transform.x = lastX;
+					transform.y = lastY;
+				} else {
+					// Handle panning (dragging)
+					projection.rotate([origin.x + r.x, origin.y + r.y]);
+					lastX = transform.x;
+					lastY = transform.y;
+				}
+		
+				// Update the map paths
+				svg_plot
+					.selectAll("path")
+					.attr("d", d3.geoPath().projection(projection));
+			}
+	}
 }
+		
+	
+		
 
 Promise.all([
 	d3.json("world.geojson"),
