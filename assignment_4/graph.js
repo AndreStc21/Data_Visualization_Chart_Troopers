@@ -78,16 +78,18 @@ function line_plot(data, svg_plot, plot_id, years) {
       .call(d3.axisLeft(y));
 
     // Add the line
-    svg_plot.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
-      .attr("d", d3.line()
-        .x(function(d) { return x(d.month) })
-        .y(function(d) { return y(d.temperature) })
-		)
+	for(year of clicked_years){
+		svg_plot.append("path")
+		.datum(data.filter(d => d.year==year))
+		.attr("fill", "none")
+		.attr("stroke", "steelblue")
+		.attr("stroke-width", 1.5)
+		.attr("d", d3.line()
+			.x(function(d) { return x(d.month) })
+			.y(function(d) { return y(d.temperature) })
+			)
 	}
+}
 
 avg_data = new Array()
 
