@@ -8,6 +8,9 @@ checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
 }
 
 function checkbox(data, checkbox_list_id) {
+	const current_year = new Date().getFullYear();
+    const min_year = current_year - 10;
+
 	const checkbox_list = document.getElementById(checkbox_list_id);
 
 	// Iterate through the data array to create and append checkbox elements
@@ -16,9 +19,9 @@ function checkbox(data, checkbox_list_id) {
 
     data.forEach(item => {
         const year = item.year;
-
+	
         // Only add the year if it's not already in the Set
-        if (!uniqueYears.has(year)) {
+        if (year >= min_year && !uniqueYears.has(year)) {
             uniqueYears.add(year);
 
             // Create a new list item (li)
