@@ -7,31 +7,73 @@ checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
     checkList.classList.add('visible');
 }
 
-const checkbox = document.querySelectorAll("input[type='checkbox']");
+function checkbox(data, checkbox_list_id) {
+	const checkbox_list = document.getElementById(checkbox_list_id);
 
-for(check of checkbox){
-	check.addEventListener('change', (event) => {
-		if (event.currentTarget.checked) {
-			clicked_years.push(event.currentTarget.value);
-			let plot = document.getElementById("svg1");
-			while (plot.firstChild) {
-				plot.removeChild(plot.lastChild);
+	// Iterate through the data array to create and append checkbox elements
+	// Use a Set to track unique years
+    const uniqueYears = new Set();
+
+    data.forEach(item => {
+        const year = item.year;
+
+        // Only add the year if it's not already in the Set
+        if (!uniqueYears.has(year)) {
+            uniqueYears.add(year);
+
+            // Create a new list item (li)
+            const li = document.createElement("li");
+
+            // Create a new checkbox input
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = year;
+
+            // Optionally set the checkbox as checked
+			if (year === '2024') {
+                 checkbox.checked = true;
+            }
+
+            // Create a text node for the label
+            const label = document.createTextNode(year);
+
+            // Append the checkbox and label to the list item
+            li.appendChild(checkbox);
+            li.appendChild(label);
+
+            // Append the list item to the checkbox list
+            checkbox_list.appendChild(li);
+        }
+    });
+
+	const checkbox = document.querySelectorAll("input[type='checkbox']");
+
+	for(check of checkbox){
+		check.addEventListener('change', (event) => {
+			if (event.currentTarget.checked) {
+				clicked_years.push(event.currentTarget.value);
+				let plot = document.getElementById("svg1");
+				while (plot.firstChild) {
+					plot.removeChild(plot.lastChild);
+				}
+				line_plot(avg_data, svg_plot1, "#plot1", clicked_years);
+			} else {
+				var index = clicked_years.indexOf(event.currentTarget.value);
+				if (index > -1) {
+					clicked_years.splice(index, 1);
+				}
+				let plot = document.getElementById("svg1");
+				while (plot.firstChild) {
+					plot.removeChild(plot.lastChild);
+				}
+				line_plot(avg_data, svg_plot1, "#plot1", clicked_years);
 			}
-			line_plot(avg_data, svg_plot1, "#plot1", clicked_years);
-		} else {
-			var index = clicked_years.indexOf(event.currentTarget.value);
-			if (index > -1) {
-				clicked_years.splice(index, 1);
-			}
-			let plot = document.getElementById("svg1");
-			while (plot.firstChild) {
-				plot.removeChild(plot.lastChild);
-			}
-			line_plot(avg_data, svg_plot1, "#plot1", clicked_years);
-		}
-	})
+		})
+	}
+	
+	clicked_years.push('2024')
 }
-clicked_years.push('2024')
+
 
 
 const margin = { top: 30, right: 30, bottom: 100, left: 100 },
@@ -101,5 +143,6 @@ d3.csv("monthly_avg_per_year.csv", function (d) {
 	};
 }).then(function (data) {
 	avg_data = data;
+	checkbox(avg_data, "checkbox1_list");
 	line_plot(avg_data, svg_plot1, "#plot1", clicked_years);
 });
