@@ -7,7 +7,7 @@ checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
     checkList.classList.add('visible');
 }
 
-function checkbox(data, checkbox_list_id, plot_id) {
+function checkbox(data_min, data_max, data_avg, checkbox_list_id, plot_id) {
 	const current_year = new Date().getFullYear();
     const min_year = current_year - 10;
 
@@ -17,7 +17,7 @@ function checkbox(data, checkbox_list_id, plot_id) {
 	// Use a Set to track unique years
     const uniqueYears = new Set();
 
-    data.forEach(item => {
+    data_min.forEach(item => {
         const year = item.year;
 	
         // Only add the year if it's not already in the Set
@@ -59,7 +59,7 @@ function checkbox(data, checkbox_list_id, plot_id) {
 				while (plot.firstChild) {
 					plot.removeChild(plot.lastChild);
 				}
-				line_plot(avg_data, svg_plot1, plot_id, clicked_years);
+				line_scatter_plot(data_min, data_max, data_avg, svg_plot1, clicked_years);
 			} else {
 				var index = clicked_years.indexOf(event.currentTarget.value);
 				if (index > -1) {
@@ -69,7 +69,7 @@ function checkbox(data, checkbox_list_id, plot_id) {
 				while (plot.firstChild) {
 					plot.removeChild(plot.lastChild);
 				}
-				line_plot(avg_data, svg_plot1, plot_id, clicked_years);
+				line_scatter_plot(data_min, data_max, data_avg, svg_plot1, clicked_years);
 			}
 		})
 	}
@@ -111,44 +111,7 @@ function add_axis_label(svg_plot, x, y, transform, text_anchor, label) {
 		.text(label);
 }
 
-function line_plot(data, svg_plot, plot_id, years) {
-	data = data.filter(d => years.includes(d.year))
-	
-	// Add X axis
-    const months = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
-
-	var x = d3.scaleLinear()
-		.domain([1, 12])
-		.range([0, width]);
-
-	svg_plot.append("g")
-		.attr("transform", "translate(0," + height + ")")
-		.call(d3.axisBottom(x)
-			.tickFormat((d, i) => months[d - 1])
-			.ticks(12));
-
-    // Add Y axis
-    var y = d3.scaleLinear()
-      .domain([0, d3.max(data, function(d) { return +d.temperature; })])
-      .range([ height, 0 ]);
-	svg_plot.append("g")
-      .call(d3.axisLeft(y));
-
-    // Add the line
-	for(year of clicked_years){
-		svg_plot.append("path")
-		.datum(data.filter(d => d.year==year))
-		.attr("fill", "none")
-		.attr("stroke", "steelblue")
-		.attr("stroke-width", 1.5)
-		.attr("d", d3.line()
-			.x(function(d) { return x(d.month) })
-			.y(function(d) { return y(d.temperature) })
-			)
-	}
-}
-
-function line_scatter_plot(data_min, data_max, data_avg, svg_plot, plot_id, years) {
+function line_scatter_plot(data_min, data_max, data_avg, svg_plot, years) {
     data_min = data_min.filter(d => years.includes(d.year));
     data_max = data_max.filter(d => years.includes(d.year));
     data_avg = data_avg.filter(d => years.includes(d.year));
@@ -172,60 +135,56 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, plot_id, year
     svg_plot.append("g")
         .call(d3.axisLeft(y));
 
+    const colorScale = d3.scaleOrdinal()
+    .domain(years)
+    .range(d3.schemeCategory10); 
+    
     const datasets = [
-        { data: data_min, color: "red", label: "Min" },
-        { data: data_max, color: "green", label: "Max" }
+        { data: data_min, label: "Min" },
+        { data: data_max, label: "Max" }
     ];
 
-    datasets.forEach(({ data, color, label }) => {
-        for (const year of years) {
+    
+    years.forEach((year) => {
+        const baseColor = colorScale(year); // Get the base color for the year
+
+        // Generate shades for the year
+        const shades = [
+            d3.color(baseColor).darker(1), // Darker shade
+            baseColor,                    // Base color
+            d3.color(baseColor).brighter(1) // Brighter shade
+        ];
+
+        datasets.forEach(({ data, label }) => {
+            // Add line for the dataset with the current year
             svg_plot.append("path")
                 .datum(data.filter(d => d.year == year))
                 .attr("fill", "none")
-                .attr("stroke", color)
+                .attr("stroke", shades[label === "Min" ? 2 : 0]) // Use shade based on label
                 .attr("stroke-width", 1.5)
                 .attr("d", d3.line()
-                    .x(function(d) { return x(d.month); })
-                    .y(function(d) { return y(d.temperature); })
+                    .x(d => x(d.month))
+                    .y(d => y(d.temperature))
                 );
-        }
-    });
+            });
 
-    svg_plot.selectAll(".scatter")
-        .data(data_avg)
-        .enter()
-        .append("circle")
-        .attr("cx", function(d) { return x(d.month); })
-        .attr("cy", function(d) { return y(d.temperature); })
-        .attr("r", 3)
-        .attr("fill", "blue")
-        .attr("opacity", 0.7);
+        // Add scatter plot for the current year
+        svg_plot.selectAll(`circle-${year}`)
+            .data(data_avg.filter(d => d.year == year))
+            .enter()
+            .append("circle")
+            .attr("cx", d => x(d.month))
+            .attr("cy", d => y(d.temperature))
+            .attr("r", 3)
+            .attr("fill", shades[1]); // Use brighter shade for scatter points
+    });
 }
 
-let data_min = [], data_max = [], data_avg = [];
-
-avg_data = new Array()
-
-d3.csv("monthly_avg_per_year.csv", function (d) {
-	return {
-		temperature: d.Value,
-		year: d.year,
-		month: d.month,
-	};
-}).then(function (data) {
-	avg_data = data;
-	checkbox(avg_data, "checkbox1_list", "#plot1");
-	line_plot(avg_data, svg_plot1, "#plot1", clicked_years);
-});
-
 Promise.all([
-    d3.csv("monthly_min_per_year.csv", d => ({ temperature: +d.Value, year: +d.year, month: +d.month })),
-    d3.csv("monthly_max_per_year.csv", d => ({ temperature: +d.Value, year: +d.year, month: +d.month })),
-    d3.csv("monthly_avg_per_year.csv", d => ({ temperature: +d.Value, year: +d.year, month: +d.month }))
+    d3.csv("monthly_min_per_year.csv", d => ({ temperature: d.Value, year: d.year, month: d.month })),
+    d3.csv("monthly_max_per_year.csv", d => ({ temperature: d.Value, year: d.year, month: d.month })),
+    d3.csv("monthly_avg_per_year.csv", d => ({ temperature: d.Value, year: d.year, month: d.month }))
 ]).then(([minData, maxData, avgData]) => {
-    data_min = minData;
-    data_max = maxData;
-    data_avg = avgData;
-    checkbox(data_avg, "checkbox2_list", "#plot2");
-    line_scatter_plot(data_min, data_max, data_avg, svg_plot2, "#plot2", clicked_years);
+    checkbox(minData, maxData, avgData, "checkbox1_list", "#plot1");
+    line_scatter_plot(minData, maxData, avgData, svg_plot1, clicked_years);
 });
