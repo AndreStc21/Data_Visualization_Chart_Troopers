@@ -77,8 +77,6 @@ function checkbox(data_min, data_max, data_avg, checkbox_list_id, plot_id) {
 	clicked_years.push('2024')
 }
 
-
-
 const margin = { top: 30, right: 30, bottom: 100, left: 100 },
 	width = 550 - margin.left - margin.right,
 	height = 550 - margin.top - margin.bottom;
@@ -92,14 +90,25 @@ const svg_plot1 = d3
 	.attr("transform", `translate(${margin.left},${margin.top})`)
 	.attr("id", "svg1");
 
-	const svg_plot2 = d3
+const svg_plot2 = d3
 	.select("#plot2")
 	.append("svg")
 	.attr("width", width + margin.left + margin.right)
 	.attr("height", height + margin.top + margin.bottom)
 	.append("g")
 	.attr("transform", `translate(${margin.left},${margin.top})`)
-	.attr("id", "svg1");
+	.attr("id", "svg2");
+
+const svg_plot3 = d3
+	.select("#plot3")
+	.append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform", `translate(${margin.left},${margin.top})`)
+	.attr("id", "svg3");	
+
+
 
 function add_axis_label(svg_plot, x, y, transform, text_anchor, label) {
 	svg_plot
