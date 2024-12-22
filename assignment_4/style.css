@@ -1,6 +1,6 @@
 .time_plots {
 	display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 #checkbox1 {
@@ -8,6 +8,10 @@
 }
 
 #checkbox2 {
+	width: fit-content;
+}
+
+#checkbox3 {
 	width: fit-content;
 }
 
