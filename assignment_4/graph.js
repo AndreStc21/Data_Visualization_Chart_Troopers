@@ -201,18 +201,18 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
         const baseColor = colorScale(year); // Get the base color for the year
 
         // Generate shades for the year
-        // const shades = [
-        //     d3.color(baseColor).darker(1), // Darker shade
-        //     baseColor,                    // Base color
-        //     d3.color(baseColor).brighter(1) // Brighter shade
-        // ];
+        const shades = [
+            d3.color(baseColor).darker(1), // Darker shade
+            baseColor,                    // Base color
+            d3.color(baseColor).brighter(1) // Brighter shade
+        ];
 
         datasets.forEach(({ data, label }) => {
             // Add line for the dataset with the current year
             svg_plot.append("path")
                 .datum(data.filter(d => d.year == year))
                 .attr("fill", "none")
-                .attr("stroke", baseColor)//shades[label === "Min" ? 2 : 0]) // Use shade based on label
+                .attr("stroke", shades[label === "Min" ? 2 : 0]) // Use shade based on label
                 .attr("stroke-width", 1.5)
                 .attr("d", d3.line()
                     .x(d => x(d.month))
