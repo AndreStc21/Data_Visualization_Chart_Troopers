@@ -386,7 +386,7 @@ function ridge_line(data_min, data_max, svg_plot, id_div){
         .call(d3.axisBottom(x));
     
     var y = d3.scaleLinear()
-    .domain([0, 1])
+    .domain([0, 0.5])
     .range([ height, 0]);
 
     var yName = d3.scaleBand()
