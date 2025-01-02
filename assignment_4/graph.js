@@ -1,8 +1,8 @@
-var checkList = document.getElementById('checkbox1');
-var clicked_years = new Array()
+var clicked_years_line_scatter = new Array();
+var clicked_years_radar = new Array();
 
 const current_year = new Date().getFullYear();
-const min_year = current_year - 19;
+const min_year = current_year - 10;
 
 // This is what I need to compute kernel density estimation
   function kernelDensityEstimator(kernel, X) {
@@ -42,7 +42,7 @@ function checkbox(data_min, data_max, data_avg, checkbox_list_id, svg_id, svg_pl
 
             // Optionally set the checkbox as checked
 			if (year === '2024') {
-                 checkbox.checked = true;
+                checkbox.checked = true;
             }
 
             // Create a text node for the label
@@ -59,30 +59,60 @@ function checkbox(data_min, data_max, data_avg, checkbox_list_id, svg_id, svg_pl
 
 	const checkbox = document.querySelectorAll("#"+checkbox_list_id+" input[type='checkbox']");
 
-	for(check of checkbox){
-		check.addEventListener('change', (event) => {
-			if (event.currentTarget.checked) {
-				clicked_years.push(event.currentTarget.value);
-				let plot = document.getElementById(svg_id);
-				while (plot.firstChild) {
-					plot.removeChild(plot.lastChild);
+	if (svg_id == "svg1")
+	{
+		for (check of checkbox) {
+			check.addEventListener('change', (event) => {
+				if (event.currentTarget.checked) {
+					clicked_years_line_scatter.push(event.currentTarget.value);
+					let plot = document.getElementById(svg_id);
+					while (plot.firstChild) {
+						plot.removeChild(plot.lastChild);
+					}
+					line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, clicked_years_line_scatter);
+				} else {
+					var index = clicked_years_line_scatter.indexOf(event.currentTarget.value);
+					if (index > -1) {
+						clicked_years_line_scatter.splice(index, 1);
+					}
+					let plot = document.getElementById(svg_id);
+					while (plot.firstChild) {
+						plot.removeChild(plot.lastChild);
+					}
+					line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, clicked_years_line_scatter);
 				}
-				line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, clicked_years);
-			} else {
-				var index = clicked_years.indexOf(event.currentTarget.value);
-				if (index > -1) {
-					clicked_years.splice(index, 1);
-				}
-				let plot = document.getElementById(svg_id);
-				while (plot.firstChild) {
-					plot.removeChild(plot.lastChild);
-				}
-				line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, clicked_years);
-			}
-		})
+			})
+		}
+		
+		clicked_years_line_scatter.push('2024')
 	}
-	
-	clicked_years.push('2024')
+	else
+	{
+		for (check of checkbox) {
+			check.addEventListener('change', (event) => {
+				if (event.currentTarget.checked) {
+					clicked_years_radar.push(event.currentTarget.value);
+					let plot = document.getElementById(svg_id);
+					while (plot.firstChild) {
+						plot.removeChild(plot.lastChild);
+					}
+					radar_chart(data_avg, svg_plot, id_div, clicked_years_radar);
+				} else {
+					var index = clicked_years_radar.indexOf(event.currentTarget.value);
+					if (index > -1) {
+						clicked_years_radar.splice(index, 1);
+					}
+					let plot = document.getElementById(svg_id);
+					while (plot.firstChild) {
+						plot.removeChild(plot.lastChild);
+					}
+					radar_chart(data_avg, svg_plot, id_div, clicked_years_radar);
+				}
+			})
+		}
+		
+		clicked_years_radar.push('2024')
+	}
 }
 
 const margin = { top: 30, right: 30, bottom: 100, left: 100 },
@@ -166,10 +196,10 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
     svg_plot.append("g")
         .call(d3.axisLeft(y));
 
-    const colorScale = d3.scaleOrdinal()
-    .domain(years)
-    .range(d3.schemeCategory10); 
-    
+	const colorScale = d3.scaleOrdinal()
+		.domain(years)
+		.range(["#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0", "#000000"]);
+	
     const datasets = [
         { data: data_min, label: "Min" },
         { data: data_max, label: "Max" }
@@ -241,10 +271,107 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
             .attr("cx", d => x(d.month))
             .attr("cy", d => y(d.temperature))
             .attr("r", 3)
-            .attr("fill", baseColor)//shades[1]); // Use brighter shade for scatter points
+            .attr("fill", baseColor) // shades[1]); // Use brighter shade for scatter points
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
             .on("mouseleave", mouseleave);
+    });
+}
+
+function radar_chart(data_avg, svg_plot, id_div, years) {
+    // Preprocess data to aggregate by month and year
+    const aggregatedData = years.map(year => {
+        const filteredData = data_avg.filter(d => d.year === year);
+
+        const months = Array.from({ length: 12 }, (_, i) => i + 1); // [1, 2, ..., 12]
+
+        return {
+            year,
+            values: months.map(month => {
+                const avgTemp = filteredData.find(d => +d.month === month)?.temperature || 0;
+                return {
+                    month,
+                    avg: +avgTemp
+                };
+            })
+        };
+    });
+
+    // Dimensions and scales
+    const radius = Math.min(width, height) / 2;
+    const angleSlice = (2 * Math.PI) / 12;
+
+    const rScale = d3.scaleLinear()
+        .domain([0, d3.max(data_avg, d => +d.temperature)])
+        .range([0, radius]);
+
+    // Create a group for the radar chart
+    const radarGroup = svg_plot.append("g")
+        .attr("transform", `translate(${width / 2},${height / 2})`);
+
+    // Draw circular gridlines
+    radarGroup.selectAll(".grid-circle")
+        .data(rScale.ticks(5))
+        .enter()
+        .append("circle")
+        .attr("class", "grid-circle")
+        .attr("r", d => rScale(d))
+        .style("fill", "#CDCDCD")
+        .style("stroke", "#CDCDCD")
+        .style("fill-opacity", 0.1);
+
+    // Add labels for gridlines
+    radarGroup.selectAll(".grid-label")
+        .data(rScale.ticks(5))
+        .enter()
+        .append("text")
+        .attr("class", "grid-label")
+        .attr("x", 0)
+        .attr("y", d => -rScale(d))
+        .attr("dy", "-0.3em")
+        .style("font-size", "10px")
+        .attr("fill", "#737373")
+        .text(d => d);
+
+    // Draw axes
+    const axes = radarGroup.selectAll(".axis")
+        .data(d3.range(12))
+        .enter()
+        .append("g")
+        .attr("class", "axis");
+
+    axes.append("line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", (d, i) => rScale(d3.max(data_avg, d => +d.temperature)) * Math.cos(angleSlice * i - Math.PI / 2))
+        .attr("y2", (d, i) => rScale(d3.max(data_avg, d => +d.temperature)) * Math.sin(angleSlice * i - Math.PI / 2))
+        .style("stroke", "#CDCDCD")
+        .style("stroke-width", "1px");
+
+    axes.append("text")
+        .attr("x", (d, i) => (rScale(d3.max(data_avg, d => +d.temperature)) + 20) * Math.cos(angleSlice * i - Math.PI / 2))  // Increased distance
+        .attr("y", (d, i) => (rScale(d3.max(data_avg, d => +d.temperature)) + 20) * Math.sin(angleSlice * i - Math.PI / 2))  // Increased distance
+        .style("font-size", "11px")
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.35em")
+        .text((d, i) => ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][i]);
+
+    const colorScale = d3.scaleOrdinal()
+        .domain(years)
+        .range(["#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0", "#000000"]);
+    
+    // Draw data
+    aggregatedData.forEach(({ year, values }) => {
+        const line = d3.lineRadial()
+            .radius(d => rScale(d.avg))
+            .angle((d, i) => i * angleSlice);
+
+        radarGroup.append("path")
+            .datum(values)
+            .attr("d", line)
+            .style("fill", "none")
+            .style("stroke", colorScale(year))
+            .style("stroke-width", 2);
     });
 }
 
@@ -316,7 +443,8 @@ Promise.all([
     d3.csv("monthly_avg_per_year.csv", d => ({ temperature: d.Value, year: d.year, month: d.month }))
 ]).then(([minData, maxData, avgData]) => {
     checkbox(minData, maxData, avgData, "checkbox1_list", "svg1", svg_plot1, '#plot1');
-    line_scatter_plot(minData, maxData, avgData, svg_plot1, '#plot1', clicked_years);
+    line_scatter_plot(minData, maxData, avgData, svg_plot1, '#plot1', clicked_years_line_scatter);
     checkbox(minData, maxData, avgData, "checkbox2_list", "svg2", svg_plot2, '#plot2');
-    ridge_line(minData, maxData, svg_plot3, '#plot3')
+	radar_chart(avgData, svg_plot2, '#plot2', clicked_years_radar);
+    ridge_line(minData, maxData, svg_plot3, '#plot3');
 });
