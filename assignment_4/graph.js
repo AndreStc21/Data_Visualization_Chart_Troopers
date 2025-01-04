@@ -5,18 +5,19 @@ const current_year = new Date().getFullYear();
 const min_year = current_year - 10;
 
 // This is what I need to compute kernel density estimation
-  function kernelDensityEstimator(kernel, X) {
+function kernelDensityEstimator(kernel, X) {
     return function(V) {
-      return X.map(function(x) {
-        return [x, d3.mean(V, function(v) { return kernel(x - v); })];
-      });
+    	return X.map(function(x) {
+        	return [x, d3.mean(V, function(v) { return kernel(x - v); })];
+    	});
     };
-  }
-  function kernelEpanechnikov(k) {
+}
+
+function kernelEpanechnikov(k) {
     return function(v) {
-      return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
-    };
-  }
+    	return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
+	};
+}
 
 function checkbox(data_min, data_max, data_avg, checkbox_list_id, svg_id, svg_plot, id_div) {
 	const checkbox_list = document.getElementById(checkbox_list_id);
@@ -160,8 +161,6 @@ const svg_plot3 = d3
 	.attr("transform", `translate(${margin.left},${margin.top})`)
 	.attr("id", "svg3");	
 
-
-
 function add_axis_label(svg_plot, x, y, transform, text_anchor, label) {
 	svg_plot
 		.append("text")
@@ -186,12 +185,30 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
     svg_plot.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x)
-            .tickFormat((d, i) => months[d - 1])
-            .ticks(12));
+        .tickFormat((d, i) => months[d - 1])
+        .ticks(12));
 
+	add_axis_label(
+		svg_plot,
+		width / 2,
+		height + 50,
+		"",
+		"middle",
+		"Month"
+	);
+	
     var y = d3.scaleLinear()
         .domain([0, d3.max([...data_min, ...data_max, ...data_avg], function(d) { return +d.temperature; })])
         .range([height, 0]);
+
+	add_axis_label(
+		svg_plot,
+		-height / 2,
+		-margin.left + 50,
+		"rotate(-90)",
+		"middle",
+		"Temperature (F°)"
+	);
 
     svg_plot.append("g")
         .call(d3.axisLeft(y));
@@ -375,15 +392,26 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
     });
 }
 
-function ridge_line(data_min, data_max, svg_plot, id_div){
-    all_years = new Array()
-    data_min.forEach(data => {if(data.year>=min_year && !all_years.includes(data.year)){all_years.push(data.year)}})
-    var x = d3.scaleLinear()
+function ridge_line(data_min, data_max, svg_plot, id_div) {
+    all_years = new Array();
+    data_min.forEach(data => {if(data.year>=min_year && !all_years.includes(data.year)){all_years.push(data.year)}});
+    
+	var x = d3.scaleLinear()
     .domain([10, 110])
     .range([ 0, width ]);
+
     svg_plot.append("g")
-        .attr("transform", "translate(0," + height + ")")
+    	.attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x));
+
+	add_axis_label(
+		svg_plot,
+		width / 2,
+		height + 50,
+		"",
+		"middle",
+		"Temperature (F°)"
+	);
     
     var y = d3.scaleLinear()
     .domain([0, 0.5])
@@ -396,6 +424,15 @@ function ridge_line(data_min, data_max, svg_plot, id_div){
 
     svg_plot.append("g")
     .call(d3.axisLeft(yName));
+
+	add_axis_label(
+		svg_plot,
+		-height / 2,
+		-margin.left + 50,
+		"rotate(-90)",
+		"middle",
+		"Year"
+	);
 
     var kde = kernelDensityEstimator(kernelEpanechnikov(7), x.ticks(30)) // increase this 40 for more accurate density.
     var allDensity = []
