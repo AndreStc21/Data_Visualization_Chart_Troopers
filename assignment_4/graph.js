@@ -261,6 +261,32 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
                 .attr("fill", "none")
                 .attr("stroke", shades[label === "Min" ? 2 : 0]) // Use shade based on label
                 .attr("stroke-width", 1.5)
+                .on("mouseover", function (event, d) {
+                    // Rendi opachi tutti gli altri elementi (linee e pallini)
+                    d3.selectAll(id_div + " path").style("opacity", 0.2);
+                    d3.selectAll(id_div + " circle").style("opacity", 0.2);
+    
+                    // Metti in evidenza solo questa linea
+                    d3.select(this).style("opacity", 1);
+    
+                    // Metti in evidenza i pallini di questa linea
+                    d3.selectAll(".y"+year+label)
+                        .style("opacity", 1);
+    
+                    tooltip
+                        .html(`Year: ${year}`)
+                        .style("opacity", 1);
+                })
+                .on("mousemove", function (event) {
+                    tooltip.style("left", (event.pageX + 20) + "px")
+                        .style("top", (event.pageY - 30) + "px");
+                })
+                .on("mouseleave", function () {
+                    d3.selectAll(id_div + " path").style("opacity", 1).style("stroke-width", 2);
+                    d3.selectAll(id_div + " circle").style("opacity", 1);
+    
+                    tooltip.style("opacity", 0);
+                })
                 .attr("d", d3.line()
                     .x(d => x(d.month))
                     .y(d => y(d.temperature))
@@ -274,7 +300,8 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
                 .attr("cx", d => x(d.month))
                 .attr("cy", d => y(d.temperature))
                 .attr("r", 3)
-                .attr("fill", baseColor)
+                .attr("fill", shades[label === "Min" ? 2 : 0])
+                .attr("class", d=> "y"+d.year+label)
                 .on("mouseover", mouseover)
                 .on("mousemove", mousemove)
                 .on("mouseleave", mouseleave);
