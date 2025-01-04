@@ -207,7 +207,7 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
 		-margin.left + 50,
 		"rotate(-90)",
 		"middle",
-		"Temperature (F°)"
+		"Temperature (°F)"
 	);
 
     svg_plot.append("g")
@@ -228,7 +228,7 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
         d3.select(this).style("opacity", 1);
         info = d3.select(this).datum();
         tooltip
-            .html("Year-Month: " + info.year + "-" + info.month + "<br>Average temperature: " + info.temperature + " Fahrenheit")
+            .html("Date: " + info.month + " / " + info.year + "<br>Average temperature: " + info.temperature + " °F")
             .style("opacity", 1);
     };
 
@@ -296,10 +296,9 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
 }
 
 function radar_chart(data_avg, svg_plot, id_div, years) {
-    // Preprocess data to aggregate by month and year
+	// Preprocess data to aggregate by month and year
     const aggregatedData = years.map(year => {
         const filteredData = data_avg.filter(d => d.year === year);
-
         const months = Array.from({ length: 12 }, (_, i) => i + 1); // [1, 2, ..., 12]
 
         return {
@@ -308,13 +307,14 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
                 const avgTemp = filteredData.find(d => +d.month === month)?.temperature || 0;
                 return {
                     month,
-                    avg: +avgTemp
+                    avg: +avgTemp,
+                    year,
                 };
             })
         };
     });
 
-    // Dimensions and scales
+	// Dimensions and scales
     const radius = Math.min(width, height) / 2;
     const angleSlice = (2 * Math.PI) / 12;
 
@@ -322,11 +322,11 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
         .domain([0, d3.max(data_avg, d => +d.temperature)])
         .range([0, radius]);
 
-    // Create a group for the radar chart
+	// Create a group for the radar chart
     const radarGroup = svg_plot.append("g")
         .attr("transform", `translate(${width / 2},${height / 2})`);
 
-    // Draw circular gridlines
+	// Draw circular gridlines
     radarGroup.selectAll(".grid-circle")
         .data(rScale.ticks(5))
         .enter()
@@ -337,7 +337,7 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
         .style("stroke", "#CDCDCD")
         .style("fill-opacity", 0.1);
 
-    // Add labels for gridlines
+	// Add labels for gridlines
     radarGroup.selectAll(".grid-label")
         .data(rScale.ticks(5))
         .enter()
@@ -350,7 +350,7 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
         .attr("fill", "#737373")
         .text(d => d);
 
-    // Draw axes
+	// Draw axes
     const axes = radarGroup.selectAll(".axis")
         .data(d3.range(12))
         .enter()
@@ -360,35 +360,99 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
     axes.append("line")
         .attr("x1", 0)
         .attr("y1", 0)
-        .attr("x2", (d, i) => rScale(d3.max(data_avg, d => +d.temperature)) * Math.cos(angleSlice * i - Math.PI / 2))
-        .attr("y2", (d, i) => rScale(d3.max(data_avg, d => +d.temperature)) * Math.sin(angleSlice * i - Math.PI / 2))
+        .attr("x2", (d, i) => rScale(d3.max(data_avg, d => +d.temperature)) * Math.cos(angleSlice * i - Math.PI / 2)) // Increased distance
+        .attr("y2", (d, i) => rScale(d3.max(data_avg, d => +d.temperature)) * Math.sin(angleSlice * i - Math.PI / 2)) // Increased distance
         .style("stroke", "#CDCDCD")
         .style("stroke-width", "1px");
 
     axes.append("text")
-        .attr("x", (d, i) => (rScale(d3.max(data_avg, d => +d.temperature)) + 20) * Math.cos(angleSlice * i - Math.PI / 2))  // Increased distance
-        .attr("y", (d, i) => (rScale(d3.max(data_avg, d => +d.temperature)) + 20) * Math.sin(angleSlice * i - Math.PI / 2))  // Increased distance
+        .attr("x", (d, i) => (rScale(d3.max(data_avg, d => +d.temperature)) + 25) * Math.cos(angleSlice * i - Math.PI / 2))  // Increased distance
+        .attr("y", (d, i) => (rScale(d3.max(data_avg, d => +d.temperature)) + 25) * Math.sin(angleSlice * i - Math.PI / 2))  // Increased distance
         .style("font-size", "11px")
         .attr("text-anchor", "middle")
         .attr("dy", "0.35em")
         .text((d, i) => ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][i]);
 
+		const mouseover = function (event, d) {
+			d3.selectAll(id_div + " path").style("opacity", 0.2);
+			d3.selectAll(id_div + " circle").style("opacity", 0.2);
+			d3.selectAll(id_div + " .grid-circle").style("opacity", 1);
+			d3.select(this).style("opacity", 1);
+		
+			tooltip
+				.html(`Date: ${d.month}/${d.year}<br>Temperature: ${d.avg.toFixed(1)}°F`)
+				.style("opacity", 1);
+		};
+	
+    const mousemove = function (event) {
+        tooltip
+            .style("left", (event.pageX + 20) + "px")
+            .style("top", (event.pageY - 30) + "px");
+    };
+
+    const mouseleave = function () {
+        d3.selectAll(id_div + " path").style("opacity", 1);
+        d3.selectAll(id_div + " circle").style("opacity", 1);
+        tooltip.style("opacity", 0);
+    };
+
     const colorScale = d3.scaleOrdinal()
         .domain(years)
         .range(["#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0", "#000000"]);
     
-    // Draw data
+	// Draw data
     aggregatedData.forEach(({ year, values }) => {
         const line = d3.lineRadial()
             .radius(d => rScale(d.avg))
-            .angle((d, i) => i * angleSlice);
+            .angle((d, i) => i * angleSlice)
+			.curve(d3.curveCardinalClosed); // Chiusura della linea per la ciclicità
 
-        radarGroup.append("path")
-            .datum(values)
-            .attr("d", line)
-            .style("fill", "none")
-            .style("stroke", colorScale(year))
-            .style("stroke-width", 2);
+		radarGroup.append("path")
+			.datum(values)
+			.attr("d", line)
+			.style("fill", "none")
+			.style("stroke", colorScale(year))
+			.style("stroke-width", 2)
+			.on("mouseover", function (event, d) {
+				// Rendi opachi tutti gli altri elementi (linee e pallini)
+				d3.selectAll(id_div + " path").style("opacity", 0.2);
+				d3.selectAll(id_div + " circle").style("opacity", 0.2);
+
+				d3.selectAll(id_div + " .grid-circle").style("opacity", 1);
+				// Metti in evidenza solo questa linea
+				d3.select(this).style("opacity", 1);
+
+				// Metti in evidenza i pallini di questa linea
+				radarGroup.selectAll("circle")
+					.filter(c => c.year === year)
+					.style("opacity", 1);
+
+				tooltip
+					.html(`Year: ${year}`)
+					.style("opacity", 1);
+			})
+			.on("mousemove", function (event) {
+				tooltip.style("left", (event.pageX + 20) + "px")
+					.style("top", (event.pageY - 30) + "px");
+			})
+			.on("mouseleave", function () {
+				d3.selectAll(id_div + " path").style("opacity", 1).style("stroke-width", 2);
+				d3.selectAll(id_div + " circle").style("opacity", 1);
+
+				tooltip.style("opacity", 0);
+			});
+		
+        radarGroup.selectAll()
+            .data(values)
+            .enter()
+            .append("circle")
+            .attr("cx", d => rScale(d.avg) * Math.cos(angleSlice * (d.month - 1) - Math.PI / 2))
+            .attr("cy", d => rScale(d.avg) * Math.sin(angleSlice * (d.month - 1) - Math.PI / 2))
+            .attr("r", 3)
+            .style("fill", colorScale(year))
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseleave", mouseleave);
     });
 }
 
@@ -410,7 +474,7 @@ function ridge_line(data_min, data_max, svg_plot, id_div) {
 		height + 50,
 		"",
 		"middle",
-		"Temperature (F°)"
+		"Temperature (°F)"
 	);
     
     var y = d3.scaleLinear()
