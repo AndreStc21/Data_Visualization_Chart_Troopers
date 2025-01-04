@@ -285,7 +285,7 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
                 })
                 .on("mousemove", function (event) {
                     tooltip.style("left", (event.pageX + 20) + "px")
-                        .style("top", (event.pageY - 30) + "px");
+                        .style("top", (event.pageY - 100) + "px");
                 })
                 .on("mouseleave", function () {
                     d3.selectAll(id_div + " path").style("opacity", 1);
@@ -421,7 +421,7 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
     const mousemove = function (event) {
         tooltip
             .style("left", (event.pageX + 20) + "px")
-            .style("top", (event.pageY - 30) + "px");
+            .style("top", (event.pageY - 100) + "px");
     };
 
     const mouseleave = function () {
@@ -464,7 +464,7 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
 			})
 			.on("mousemove", function (event) {
 				tooltip.style("left", (event.pageX + 20) + "px")
-					.style("top", (event.pageY - 30) + "px");
+					.style("top", (event.pageY - 100) + "px");
 			})
 			.on("mouseleave", function () {
 				d3.selectAll(id_div + " path").style("opacity", 1).style("stroke-width", 2);
