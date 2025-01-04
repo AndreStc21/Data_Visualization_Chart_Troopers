@@ -332,7 +332,8 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
 	// Preprocess data to aggregate by month and year
     const aggregatedData = years.map(year => {
         const filteredData = data_avg.filter(d => d.year === year);
-        const months = Array.from({ length: 12 }, (_, i) => i + 1); // [1, 2, ..., 12]
+        let length_moths = year !== '2024' ? 12 : 11;
+        const months = Array.from({ length : length_moths }, (_, i) => i + 1); // [1, 2, ..., 12]
 
         return {
             year,
@@ -561,6 +562,7 @@ function ridge_line(data_min, data_max, svg_plot, id_div) {
         .attr("fill", "red")
         .attr("stroke", "#000")
         .attr("stroke-width", 1)
+        .attr("opacity", 0.7)
         .attr("d",  d3.line()
             .curve(d3.curveBasis)
             .x(function(d) { return x(d[0]); })
