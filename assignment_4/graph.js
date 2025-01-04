@@ -3,6 +3,9 @@ var clicked_years_radar = new Array();
 
 const current_year = new Date().getFullYear();
 const min_year = current_year - 10;
+const all_years_palette = [...Array(current_year - min_year).keys()].map(i => '' + (i + min_year));
+const palette = ["#9e0142", "#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#e6f598", "#abdda4", "#66c2a5", "#3288bd", "#5e4fa2"];
+const colorScale = d3.scaleOrdinal(palette).domain(all_years_palette);
 
 // This is what I need to compute kernel density estimation
 function kernelDensityEstimator(kernel, X) {
@@ -48,10 +51,14 @@ function checkbox(data_min, data_max, data_avg, checkbox_list_id, svg_id, svg_pl
 
             // Create a text node for the label
             const label = document.createTextNode(year);
-
+            let baseColor = colorScale(year)
+            const box_color = document.createElement("div");
+            box_color.setAttribute("class", "color-box");
+            box_color.style.backgroundColor = baseColor;
             // Append the checkbox and label to the list item
             li.appendChild(checkbox);
             li.appendChild(label);
+            li.appendChild(box_color)
 
             // Append the list item to the checkbox list
             checkbox_list.appendChild(li);
@@ -211,11 +218,8 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
 	);
 
     svg_plot.append("g")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y).tickSizeOuter([0]));
 
-	const colorScale = d3.scaleOrdinal()
-		.domain(years)
-		.range(["#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0", "#000000"]);
 	
     const datasets = [
         { data: data_min, label: "Min" },
@@ -226,6 +230,7 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
         d3.selectAll(id_div + "  path").style("opacity", 0.2);
         d3.selectAll(id_div + "  circle").style("opacity", 0.2);
         d3.select(this).style("opacity", 1);
+        d3.selectAll(id_div + " .domain").style("opacity", 1);
         info = d3.select(this).datum();
         tooltip
             .html("Date: " + info.month + " / " + info.year + "<br>Average temperature: " + info.temperature + " °F")
@@ -272,6 +277,7 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
                     // Metti in evidenza i pallini di questa linea
                     d3.selectAll(".y"+year+label)
                         .style("opacity", 1);
+                    d3.selectAll(id_div + " .domain").style("opacity", 1);
     
                     tooltip
                         .html(`Year: ${year}`)
@@ -282,7 +288,7 @@ function line_scatter_plot(data_min, data_max, data_avg, svg_plot, id_div, years
                         .style("top", (event.pageY - 30) + "px");
                 })
                 .on("mouseleave", function () {
-                    d3.selectAll(id_div + " path").style("opacity", 1).style("stroke-width", 2);
+                    d3.selectAll(id_div + " path").style("opacity", 1);
                     d3.selectAll(id_div + " circle").style("opacity", 1);
     
                     tooltip.style("opacity", 0);
@@ -423,9 +429,6 @@ function radar_chart(data_avg, svg_plot, id_div, years) {
         tooltip.style("opacity", 0);
     };
 
-    const colorScale = d3.scaleOrdinal()
-        .domain(years)
-        .range(["#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0", "#000000"]);
     
 	// Draw data
     aggregatedData.forEach(({ year, values }) => {
